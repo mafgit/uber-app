@@ -6,28 +6,26 @@ int menu1()
 {
 	int opt;
 
-   do{
-	   cout << "Enter a number for one of the following commands:" << endl;
+	do {
+		cout << "Enter a number for one of the following commands:" << endl;
 		cout << "1) Signup" << endl;
 		cout << "2) Login" << endl;
 		cout << "3) Exit" << endl;
 		cin >> opt;
-   } 
-   while (opt != 1 && opt != 2 && opt != 3);
-   
-   return opt;
+	} while (opt != 1 && opt != 2 && opt != 3);
+
+	return opt;
 }
 
 
 int menu2()
 {
-	int opt=0;
-	do{
+	int opt = 0;
+	do {
 		cout << "1) Passenger" << endl;
 		cout << "2) Driver" << endl;
 		cin >> opt;
-	}
-	while(opt != 1 && opt != 2);
+	} while (opt != 1 && opt != 2);
 
 	return opt;
 }
