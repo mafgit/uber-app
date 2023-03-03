@@ -16,18 +16,7 @@ class Driver {
 class Vehicle {
 	int model, noOfSeats;
 	string brand, plateNum, color;
-};
-
-class Car {
-
-};
-
-class Bike {
-
-};
-
-class Rickshaw {
-
+	// todo: add name/type of vehicle like uber mini, etc 
 };
 
 class Booking {
