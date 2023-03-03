@@ -3,12 +3,14 @@
 ### Introduction:
 
 - This is group project that has to be made using object oriented programming.
-- It involves management of passengers, drivers, and rides/bookings management.
+- It involves management of passengers, drivers, and rides/bookings.
 - It is a console-based application.
 
 ### Group Members:
 
-3
+- [mafgit](https://github.com/mafgit)
+- [sarimbinasif](https://github.com/sarimbinasif)
+- [muzammil74](https://github.com/muzammil74)
 
 ### Language:
 
