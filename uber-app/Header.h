@@ -3,34 +3,45 @@
 using namespace std;
 
 // todo: inheritance (User -> Driver, Passenger, and if there's time and energy, then Admin);
-// basic variables will become protected in User class
-class Passenger {
+
+class User {
+protected:
 	int id, age;
-	string firstName, lastName, phoneNum, password;
-	// todo: nic?
+	string firstName, lastName, phoneNum, nic, password;
+public:
+	User(int id, int age, string firstName, string lastName, string phoneNum, string password) : id(id), age(age), firstName(firstName), lastName(lastName), phoneNum(phoneNum), password(password) {}
+
+};
+
+class Passenger : public User {
+public:
+	Passenger(int id, int age, string firstName, string lastName, string phoneNum, string password)
+		: User(id, age, firstName, lastName, phoneNum, password) {}
+
 };
 
 class Vehicle {
 	int model, noOfSeats;
-	string brand, plateNum, color;
-	// todo: add name/type of vehicle like uber mini, etc
+	string brand, plateNum, color, type;
 	// types: bike, ride_ac, ride, ride_mini, auto
 };
 
-class Driver {
-	int id, age;
-	string firstName, lastName, phoneNum, password;
-	// todo: nic?
+class Driver : public User {
 	int sumOfRatings, userCountOfRating;
 	Vehicle vehicle;
+	string nic;
+
+public:
+	Driver(int id, int age, string firstName, string lastName, string phoneNum, string password, int sumOfRatings, int userCountOfRating, Vehicle vehicle, string nic)
+		: User(id, age, firstName, lastName, phoneNum, password), sumOfRatings(sumOfRatings), userCountOfRating(userCountOfRating), vehicle(vehicle), nic(nic) {}
 };
 
 class Booking {
 	char pickupLocation, dropoffLocation;
-	int fare; // in rupees, so I guess I do not need float
+	int fare; // todo: check if fare should be taken in float
 	Passenger passenger;
 	Driver driver;
 	// todo: bookedAt (time of booking)
-	string status; // coming, ready, going, completed, cancelled
-	// todo: maybe I shouldn't add this many values for status
+	// todo: completedAt
+	string status; // arriving, arrived, in_progress, completed, cancelled
 };
