@@ -6,17 +6,39 @@ using namespace std;
 
 class User {
 protected:
-	int id, age;
+	int id, day, month, year;
 	string firstName, lastName, phoneNum, nic, password;
 public:
-	User(int id, int age, string firstName, string lastName, string phoneNum, string password) : id(id), age(age), firstName(firstName), lastName(lastName), phoneNum(phoneNum), password(password) {}
+	User() {
+		id = -1;
+		day = 0;
+		month = 0;
+		year = 0;
+		firstName = "";
+		lastName = "";
+		phoneNum = "";
+		nic = "";
+		password = "";
+	}
 
+	User(int id, int day, int month, int year, string firstName, string lastName, string phoneNum, string password) : id(id), day(day), month(month), year(year), firstName(firstName), lastName(lastName), phoneNum(phoneNum), password(password) {}
+	
+	string getPhoneNum()
+	{
+		return phoneNum;
+	}
 };
 
 class Passenger : public User {
 public:
-	Passenger(int id, int age, string firstName, string lastName, string phoneNum, string password)
-		: User(id, age, firstName, lastName, phoneNum, password) {}
+	Passenger() {}
+
+	Passenger(int id, int day, int month, int year, string firstName, string lastName, string phoneNum, string password)
+		: User(id, day,  month,  year, firstName, lastName, phoneNum, password) {}
+
+	void appendToFile() {
+
+	}
 
 };
 
@@ -32,8 +54,17 @@ class Driver : public User {
 	string nic;
 
 public:
-	Driver(int id, int age, string firstName, string lastName, string phoneNum, string password, int sumOfRatings, int userCountOfRating, Vehicle vehicle, string nic)
-		: User(id, age, firstName, lastName, phoneNum, password), sumOfRatings(sumOfRatings), userCountOfRating(userCountOfRating), vehicle(vehicle), nic(nic) {}
+	Driver() {
+		sumOfRatings=0;
+		userCountOfRating=0;
+		nic = "";
+		// todo: vehicle initialization
+	}
+
+	Driver(int id, int day, int month, int year, string firstName, string lastName, string phoneNum, string password, Vehicle vehicle, string nic)
+		: User(id, day,  month,  year, firstName, lastName, phoneNum, password), sumOfRatings(0), userCountOfRating(0), vehicle(vehicle), nic(nic) {}
+	
+	void appendToFile() {}
 };
 
 class Booking {

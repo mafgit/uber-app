@@ -87,9 +87,13 @@ int main()
 		if (opt2 == 2) {
 			bool flag1;
 			bool flag2;
+			bool phoneNumExists;
+
 			do {
 				flag1 = false;
 				flag2 = false;
+				phoneNumExists = false;
+
 				cout << endl << "Enter phone number (start with 0): ";
 				cin >> phoneNum;
 
@@ -107,7 +111,37 @@ int main()
 				is_err = phoneNum.length() != 11 || flag1 == true || flag2 == true;
 				if (is_err)
 					cerr << endl << "Error: invalid phone number" << endl;
-			} while (is_err);
+				else {
+					if (opt2 == 1) {
+						ifstream passengers_cin("passengers.txt");
+						Passenger passenger;
+
+						while (passengers_cin.eof() == 0) {
+							passengers_cin.read((char*)&passenger, sizeof(passenger));
+							if (passenger.getPhoneNum() == phoneNum) {
+								cerr << endl << "Error: passenger already exists with this phone number" << endl;
+								phoneNumExists = true;
+								break;
+							}
+						}
+						passengers_cin.close();
+					}
+					else if (opt2 == 2) {
+						ifstream drivers_cin("drivers.txt");
+						Driver driver;
+
+						while (drivers_cin.eof() == 0) {
+							drivers_cin.read((char*)&driver, sizeof(driver));
+							if (driver.getPhoneNum() == phoneNum) {
+								cerr << endl << "Error: driver already exists with this phone number" << endl;
+								phoneNumExists = true;
+								break;
+							}
+						}
+						drivers_cin.close();
+					}
+				}
+			} while (is_err || phoneNumExists);
 
 			do {
 				flag1 = false;
@@ -151,8 +185,18 @@ int main()
 		} while (password.length() < 6 || password != confirmPassword);
 
 		// todo: ask for vehicle details if driver
-		// todo: check if phone no. exists already in file; in that case show that it exists already so try logging instead
+		
 		// todo: otherwise append the details to end of the drivers or passengers file
+		if (opt2 == 1) {
+			// todo: keep check of id and change 0 to id in next line
+			Passenger passenger(0, day, month, year, firstName, lastName, phoneNum, password);
+			passenger.appendToFile();
+		}
+		else {
+			// todo: keep check of id and change 0 to id in next line
+			Driver driver(0, day, month, year, firstName, lastName, phoneNum, password, vehicle, nic);
+			driver.appendToFile();
+		}
 	}
 	else { // opt1 = 2 (login)
 		// todo: ask for login info
