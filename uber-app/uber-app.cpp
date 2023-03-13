@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 #include "Header.h"
 using namespace std;
 
@@ -44,83 +46,111 @@ int main()
 	} while (opt2 == 3);
 
 	string firstName, lastName, phoneNum, password, confirmPassword;
-	int age;
+	int day, month, year;
 	string nic;
 
+	bool is_err;
 	if (opt1 == 1) {
-		cout << endl << "Enter first name: ";
-		cin >> firstName;
-		cout << endl << "Enter last name: ";
-		cin >> lastName;
-		// todo: name validations
+		do {
+			cout << endl << "Enter first name: ";
+			cin >> firstName;
+
+			cout << endl << "Enter last name: ";
+			cin >> lastName;
+			
+			// todo: first name can have only one space
+
+			is_err = firstName.length() < 2 || firstName.length() > 30 || lastName.length() < 2 || lastName.length() > 30;
+		} while (is_err);
 
 		// todo: think about reducing the code inside main and increasing the code inside classes (for later)
 		// todo: think about making validation functions separately in another file (for later maybe)
 
-		// todo: input DOB instead of age (we need DOB only for driver or for both?)
-		// todo: take nic only for driver
 		do {
-			cout << endl << "Enter age: ";
-			cin >> age;
-			if (age < 18 && opt2 == 2)
-				cout << endl << "Error: age of driver must be at least 18" << endl;
-		} while (age < 18 && opt2 == 2);
+			cout << endl << "Enter date of your date of birth: ";
+			cin >> day; 
+			cout << endl << "Enter month of your date of birth: ";
+			cin >> month; 
+			cout << endl << "Enter year of your date of birth: ";
+			cin >> year;
 
-		bool flag1;
-		bool flag2;
-		do {
-			flag1 = false;
-			flag2 = false;
-			cout << endl << "Enter phone number (start with 0): ";
-			cin >> phoneNum;
+			is_err = day < 1 || day > 31 || month < 1 || month > 12 || year > 2023 || year < 1920;
 
-			if(phoneNum[0] != '0' || phoneNum[1] != '3')
-				flag1 = true;
-			else {
-				for (int i = 0; i < phoneNum.length(); i++) {
-					if (!isdigit(phoneNum[i])) {
-						flag2 = true;
-						break;
+			if (is_err)
+				cerr << endl << "Error: invalid date of birth" << endl;
+
+			// todo: make 2023 and 1920 into a variable
+			// todo: check if driver is of at least 18 years old
+		} while (is_err);
+		
+		
+		if (opt2 == 2) {
+			bool flag1;
+			bool flag2;
+			do {
+				flag1 = false;
+				flag2 = false;
+				cout << endl << "Enter phone number (start with 0): ";
+				cin >> phoneNum;
+
+				if (phoneNum[0] != '0' || phoneNum[1] != '3')
+					flag1 = true;
+				else {
+					for (int i = 0; i < phoneNum.length(); i++) {
+						if (!isdigit(phoneNum[i])) {
+							flag2 = true;
+							break;
+						}
 					}
 				}
-			}
 
-		} while (phoneNum.length() != 11 || flag1 == true || flag2 == true);
+				is_err = phoneNum.length() != 11 || flag1 == true || flag2 == true;
+				if (is_err)
+					cerr << endl << "Error: invalid phone number" << endl;
+			} while (is_err);
 
-		do{
-			flag1 = false;
-			flag2 = false;
-			cout << endl << "Enter NIC number (without dashes): ";
-			cin >> nic;
+			do {
+				flag1 = false;
+				flag2 = false;
+				cout << endl << "Enter NIC number (without dashes): ";
+				cin >> nic;
 
-			if(nic[0] != '4')
-				flag1 = true;
-			else {
-				for (int i = 0; i < nic.length(); i++) {
-					if (!isdigit(nic[i])) {
-						flag2 = true;
-						break;
+				if (nic[0] != '4')
+					flag1 = true;
+				else {
+					for (int i = 0; i < nic.length(); i++) {
+						if (!isdigit(nic[i])) {
+							flag2 = true;
+							break;
+						}
 					}
 				}
-			}
-		} while(nic.length() !=  13 || flag1 || flag2);
+
+				is_err = nic.length() != 13 || flag1 || flag2;
+
+				if (is_err)
+					cerr << endl << "Error: invalid NIC" << endl;
+			} while (is_err);
+		}
+
+		cin.ignore();
 
 		do {
 			cout << endl << "Enter password: ";
-			cin >> password;
+			getline(cin, password);
+
 			cout << endl << "Confirm password: ";
-			cin >> confirmPassword;
-			// todo: there is a problem when space is entered in string, so counter that problem in all string inputs
+			getline(cin, confirmPassword);
 
 			if (password.length() < 6)
-				cout << endl << "Error: password must be at least six characters long" << endl;
+				cerr << endl << "Error: password must be at least six characters long" << endl;
 
 			if (password != confirmPassword)
-				cout << endl << "Error: passwords do not match" << endl;
+				cerr << endl << "Error: passwords do not match" << endl;
 
 		} while (password.length() < 6 || password != confirmPassword);
 
-		// todo: input more details if the user is a driver, such as vehicle details, nic, etc
+		// todo: ask for vehicle details if driver
 		// todo: check if phone no. exists already in file; in that case show that it exists already so try logging instead
 		// todo: otherwise append the details to end of the drivers or passengers file
 	}
