@@ -4,36 +4,6 @@
 #include "Header.h"
 using namespace std;
 
-int menu1()
-{
-	int opt;
-
-	do {
-		cout << endl << "Enter a number for one of the following commands:" << endl;
-		cout << "1) Signup" << endl;
-		cout << "2) Login" << endl;
-		cout << "3) Exit" << endl;
-		cin >> opt;
-	} while (opt != 1 && opt != 2 && opt != 3);
-
-	return opt;
-}
-
-
-int menu2()
-{
-	int opt = 0;
-
-	do {
-		cout << endl << "1) As passenger" << endl;
-		cout << "2) As driver" << endl;
-		cout << "3) Go Back" << endl;
-		cin >> opt;
-	} while (opt != 1 && opt != 2 && opt != 3);
-
-	return opt;
-}
-
 int main()
 {
 	cout << endl << "Welcome to Uber Application!" << endl;
@@ -57,8 +27,8 @@ int main()
 
 			cout << endl << "Enter last name: ";
 			cin >> lastName;
-			
-			// todo: first name can have only one space
+
+			// todo: validation of names regarding spaces
 
 			is_err = firstName.length() < 2 || firstName.length() > 30 || lastName.length() < 2 || lastName.length() > 30;
 		} while (is_err);
@@ -68,9 +38,9 @@ int main()
 
 		do {
 			cout << endl << "Enter date of your date of birth: ";
-			cin >> day; 
+			cin >> day;
 			cout << endl << "Enter month of your date of birth: ";
-			cin >> month; 
+			cin >> month;
 			cout << endl << "Enter year of your date of birth: ";
 			cin >> year;
 
@@ -82,8 +52,8 @@ int main()
 			// todo: make 2023 and 1920 into a variable
 			// todo: check if driver is of at least 18 years old
 		} while (is_err);
-		
-		
+
+
 		if (opt2 == 2) {
 			bool flag1;
 			bool flag2;
@@ -184,18 +154,37 @@ int main()
 
 		} while (password.length() < 6 || password != confirmPassword);
 
-		// todo: ask for vehicle details if driver
-		
-		// todo: otherwise append the details to end of the drivers or passengers file
-		if (opt2 == 1) {
+		if (opt2 == 2) { // driver
+			int model, noOfSeats;
+			string plateNum, color, type, name;
+
+			cout << "Enter name of the vehicle: ";
+			getline(cin, name);
+
+			cout << "Enter model of the vehicle: ";
+			cin >> model;
+
+			cout << "Enter number of seats in the vehicle: ";
+			cin >> noOfSeats;
+
+			cout << "Enter color of the vehicle: ";
+			cin >> color;
+
+			cout << "Enter plate Number of the vehicle: ";
+			cin >> plateNum;
+			// todo: validation of name, model, noOfSeats, color, plateNum
+
+			type = typesMenu();
+
+			// todo: keep check of id and change 0 to id in next line
+			Vehicle vehicle(model, noOfSeats, name, plateNum, color, type);
+			Driver driver(0, day, month, year, firstName, lastName, phoneNum, password, vehicle, nic);
+			driver.appendToFile();
+		}
+		else { // passenger
 			// todo: keep check of id and change 0 to id in next line
 			Passenger passenger(0, day, month, year, firstName, lastName, phoneNum, password);
 			passenger.appendToFile();
-		}
-		else {
-			// todo: keep check of id and change 0 to id in next line
-			Driver driver(0, day, month, year, firstName, lastName, phoneNum, password, vehicle, nic);
-			driver.appendToFile();
 		}
 	}
 	else { // opt1 = 2 (login)
