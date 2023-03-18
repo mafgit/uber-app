@@ -7,7 +7,7 @@ using namespace std;
 int main()
 {
 	cout << endl
-		 << "Welcome to Uber Application!" << endl;
+		<< "Welcome to Uber Application!" << endl;
 	int opt1, opt2;
 
 	do
@@ -28,11 +28,11 @@ int main()
 		do
 		{
 			cout << endl
-				 << "Enter first name: ";
+				<< "Enter first name: ";
 			cin >> firstName;
 
 			cout << endl
-				 << "Enter last name: ";
+				<< "Enter last name: ";
 			cin >> lastName;
 
 			// todo: validation of names regarding spaces
@@ -46,20 +46,20 @@ int main()
 		do
 		{
 			cout << endl
-				 << "Enter date of your date of birth: ";
+				<< "Enter date of your date of birth: ";
 			cin >> day;
 			cout << endl
-				 << "Enter month of your date of birth: ";
+				<< "Enter month of your date of birth: ";
 			cin >> month;
 			cout << endl
-				 << "Enter year of your date of birth: ";
+				<< "Enter year of your date of birth: ";
 			cin >> year;
 
 			is_err = day < 1 || day > 31 || month < 1 || month > 12 || year > 2023 || year < 1920;
 
 			if (is_err)
 				cerr << endl
-					 << "Error: invalid date of birth" << endl;
+				<< "Error: invalid date of birth" << endl;
 
 			// todo: make 2023 and 1920 into a variable
 			// todo: check if driver is of at least 18 years old
@@ -76,7 +76,7 @@ int main()
 			phoneNumExists = false;
 
 			cout << endl
-				 << "Enter phone number (start with 0): ";
+				<< "Enter phone number (start with 0): ";
 			cin >> phoneNum;
 
 			if (phoneNum[0] != '0' || phoneNum[1] != '3')
@@ -96,7 +96,7 @@ int main()
 			is_err = phoneNum.length() != 11 || flag1 == true || flag2 == true;
 			if (is_err)
 				cerr << endl
-					 << "Error: invalid phone number" << endl;
+				<< "Error: invalid phone number" << endl;
 			else
 			{
 				if (opt2 == 1)
@@ -107,17 +107,17 @@ int main()
 						Passenger passenger;
 						while (passengers_cin.eof() == 0)
 						{
-							passengers_cin.read((char *)&passenger, sizeof(passenger));
+							passengers_cin.read((char*)&passenger, sizeof(passenger));
 							if (passenger.getPhoneNum() == phoneNum)
 							{
 								cerr << endl
-									 << "Error: passenger already exists with this phone number" << endl;
+									<< "Error: passenger already exists with this phone number" << endl;
 								phoneNumExists = true;
 								break;
 							}
 						}
-						passengers_cin.close();
 					}
+					passengers_cin.close();
 				}
 				else if (opt2 == 2)
 				{
@@ -127,17 +127,17 @@ int main()
 						Driver driver;
 						while (drivers_cin.eof() == 0)
 						{
-							drivers_cin.read((char *)&driver, sizeof(driver));
+							drivers_cin.read((char*)&driver, sizeof(driver));
 							if (driver.getPhoneNum() == phoneNum)
 							{
 								cerr << endl
-									 << "Error: driver already exists with this phone number" << endl;
+									<< "Error: driver already exists with this phone number" << endl;
 								phoneNumExists = true;
 								break;
 							}
 						}
-						drivers_cin.close();
 					}
+					drivers_cin.close();
 				}
 			}
 		} while (is_err || phoneNumExists);
@@ -149,7 +149,7 @@ int main()
 				flag1 = false;
 				flag2 = false;
 				cout << endl
-					 << "Enter NIC number (without dashes): ";
+					<< "Enter NIC number (without dashes): ";
 				cin >> nic;
 
 				if (nic[0] != '4')
@@ -170,27 +170,27 @@ int main()
 
 				if (is_err)
 					cerr << endl
-						 << "Error: invalid NIC" << endl;
+					<< "Error: invalid NIC" << endl;
 			} while (is_err);
 		}
 
 		do
 		{
 			cout << endl
-				 << "Enter password: ";
+				<< "Enter password: ";
 			cin >> password;
 
 			cout << endl
-				 << "Confirm password: ";
+				<< "Confirm password: ";
 			cin >> confirmPassword;
 
 			if (password.length() < 6)
 				cerr << endl
-					 << "Error: password must be at least six characters long" << endl;
+				<< "Error: password must be at least six characters long" << endl;
 
 			if (password != confirmPassword)
 				cerr << endl
-					 << "Error: passwords do not match" << endl;
+				<< "Error: passwords do not match" << endl;
 
 		} while (password.length() < 6 || password != confirmPassword);
 
@@ -199,19 +199,19 @@ int main()
 			int model, noOfSeats;
 			string plateNum, color, type, name;
 
-			cout << "Enter name of the vehicle: ";
-			getline(cin, name);
+			cout << endl << "Enter name of the vehicle: ";
+			cin >> name;
 
-			cout << "Enter model of the vehicle: ";
+			cout << endl << "Enter model of the vehicle: ";
 			cin >> model;
 
-			cout << "Enter number of seats in the vehicle: ";
+			cout << endl << "Enter number of seats in the vehicle: ";
 			cin >> noOfSeats;
 
-			cout << "Enter color of the vehicle: ";
+			cout << endl << "Enter color of the vehicle: ";
 			cin >> color;
 
-			cout << "Enter plate Number of the vehicle: ";
+			cout << endl << "Enter plate Number of the vehicle: ";
 			cin >> plateNum;
 			// todo: validation of name, model, noOfSeats, color, plateNum
 
@@ -234,7 +234,7 @@ int main()
 		// todo: ask for login info
 		// it is already stored in opt2 whether the user wants to be logged in as driver or passenger
 		cout << endl
-			 << "Enter phone number: " << endl;
+			<< "Enter phone number: " << endl;
 		cin >> phoneNum;
 
 		cout << endl << "Enter password: " << endl;
@@ -244,11 +244,19 @@ int main()
 		{
 			bool found = 0;
 			ifstream passengers_cin("passengers.txt");
+
 			Passenger passenger;
-			while (!passengers_cin.eof() && !found)
+			while (!found && !passengers_cin.eof())
 			{
-				passengers_cin.read((char *)&passenger, sizeof(passenger));
-				cout << passenger.getPassword() << passenger.getPhoneNum();
+				/*
+					found	eof		run while loop
+					0		0		1
+					0		1		0
+					1		0		0
+					1		1		0
+				*/
+				passengers_cin.read((char*)&passenger, sizeof(passenger));
+				//cout << endl << passenger.getPassword() << endl << passenger.getPhoneNum() << endl;
 				if (password == passenger.getPassword() && phoneNum == passenger.getPhoneNum())
 				{
 					found = 1;
@@ -260,12 +268,14 @@ int main()
 			if (!found)
 			{
 				cerr << endl
-					 << "Error: invalid credentials" << endl;
+					<< "Error: invalid credentials" << endl;
+				// todo: show first menu again
 			}
 			else
 			{
 				// logged in as passenger
-				cout << "Logged in as passenger";
+				cout << endl << "Logged in as passenger" << endl;
+				return 0;
 				// todo: correct error
 			}
 		}
@@ -273,10 +283,11 @@ int main()
 		{
 			bool found = 0;
 			ifstream drivers_cin("drivers.txt");
+
 			Driver driver;
 			while (!drivers_cin.eof() && !found)
 			{
-				drivers_cin.read((char *)&driver, sizeof(driver));
+				drivers_cin.read((char*)&driver, sizeof(driver));
 				if (password == driver.getPassword() && phoneNum == driver.getPhoneNum())
 				{
 					found = 1;
@@ -288,12 +299,14 @@ int main()
 			if (!found)
 			{
 				cerr << endl
-					 << "Error: invalid credentials" << endl;
+					<< "Error: invalid credentials" << endl;
+				// todo: show first menu again
 			}
 			else
 			{
 				// logged in as driver
-				cout << "Logged in as driver";
+				cout << endl << "Logged in as driver" << endl;
+				return 0;
 				// todo: correct error
 			}
 		}

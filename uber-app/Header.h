@@ -10,7 +10,7 @@ class User
 {
 protected:
     int id, day, month, year;
-    string firstName, lastName, phoneNum, nic, password;
+    string firstName, lastName, phoneNum, password;
 
 public:
     User()
@@ -22,7 +22,6 @@ public:
         firstName = "";
         lastName = "";
         phoneNum = "";
-        nic = "";
         password = "";
     }
 
@@ -30,13 +29,11 @@ public:
 
     string getPhoneNum()
     {
-    	cout << phoneNum;
         return phoneNum;
     }
 
     string getPassword()
     {
-    	cout << password;
         return password;
     }
 };
@@ -65,7 +62,12 @@ class Vehicle
 public:
     Vehicle()
     {
-        // variable initialization
+        model = 0;
+        noOfSeats = 0;
+        name = "";
+        plateNum = "";
+        color = "";
+        type = "";
     }
     
     Vehicle(int model, int noOfSeats, string name, string plateNum, string color, string type)
@@ -91,7 +93,6 @@ public:
         sumOfRatings = 0;
         userCountOfRating = 0;
         nic = "";
-        // todo: vehicle initialization
     }
 
     Driver(int id, int day, int month, int year, string firstName, string lastName, string phoneNum, string password, Vehicle vehicle, string nic)
