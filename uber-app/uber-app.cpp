@@ -228,6 +228,10 @@ int main()
 			Passenger passenger(0, day, month, year, firstName, lastName, phoneNum, password);
 			passenger.appendToFile();
 		}
+
+		// signed up
+		//main();
+		//system("");
 	}
 	else
 	{ // opt1 = 2 (login)
@@ -246,20 +250,22 @@ int main()
 			ifstream passengers_cin("passengers.txt");
 
 			Passenger passenger;
-			while (!found && !passengers_cin.eof())
-			{
-				/*
-					found	eof		run while loop
-					0		0		1
-					0		1		0
-					1		0		0
-					1		1		0
-				*/
-				passengers_cin.read((char*)&passenger, sizeof(passenger));
-				//cout << endl << passenger.getPassword() << endl << passenger.getPhoneNum() << endl;
-				if (password == passenger.getPassword() && phoneNum == passenger.getPhoneNum())
+			if (passengers_cin) {
+				while (!found && !passengers_cin.eof())
 				{
-					found = 1;
+					/*
+						found	eof		run while loop
+						0		0		1
+						0		1		0
+						1		0		0
+						1		1		0
+					*/
+					passengers_cin.read((char*)&passenger, sizeof(passenger));
+					//cout << endl << passenger.getPassword() << endl << passenger.getPhoneNum() << endl;
+					if (password == passenger.getPassword() && phoneNum == passenger.getPhoneNum())
+					{
+						found = 1;
+					}
 				}
 			}
 
@@ -267,16 +273,20 @@ int main()
 
 			if (!found)
 			{
+				system("cls");
 				cerr << endl
 					<< "Error: invalid credentials" << endl;
-				// todo: show first menu again
+				// show first menu again
+				main();
+				// todo: think of a more efficient way of going back to start of main
 			}
 			else
 			{
 				// logged in as passenger
+				system("cls");
 				cout << endl << "Logged in as passenger" << endl;
+				int opt = passenger.displayMenu();
 				return 0;
-				// todo: correct error
 			}
 		}
 		else if (opt2 == 2)
@@ -285,12 +295,14 @@ int main()
 			ifstream drivers_cin("drivers.txt");
 
 			Driver driver;
-			while (!drivers_cin.eof() && !found)
-			{
-				drivers_cin.read((char*)&driver, sizeof(driver));
-				if (password == driver.getPassword() && phoneNum == driver.getPhoneNum())
+			if (drivers_cin) {
+				while (!drivers_cin.eof() && !found)
 				{
-					found = 1;
+					drivers_cin.read((char*)&driver, sizeof(driver));
+					if (password == driver.getPassword() && phoneNum == driver.getPhoneNum())
+					{
+						found = 1;
+					}
 				}
 			}
 
@@ -298,16 +310,18 @@ int main()
 
 			if (!found)
 			{
+				system("cls");
 				cerr << endl
 					<< "Error: invalid credentials" << endl;
-				// todo: show first menu again
+				main();
 			}
 			else
 			{
 				// logged in as driver
-				cout << endl << "Logged in as driver" << endl;
+				system("cls");
+				cout << endl << "Logged in as passenger" << endl;
+				int opt = driver.displayMenu();
 				return 0;
-				// todo: correct error
 			}
 		}
 	}

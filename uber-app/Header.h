@@ -36,6 +36,10 @@ public:
     {
         return password;
     }
+
+    void viewProfile() {
+        // todo: cout
+    }
 };
 
 class Passenger : public User
@@ -51,6 +55,25 @@ public:
         ofstream passengers_cout("passengers.txt", ios::app);
         passengers_cout.write((char *)this, sizeof(*this));
         passengers_cout.close();
+    }
+
+    int displayMenu() {
+        // could've been done using inheritance but didn't do that coz it would be difficult if we need to add more options in either passenger or driver
+        int opt = 0;
+
+        do
+        {
+            cout << endl
+                << "1) Book a ride" << endl;
+            cout << "2) View history" << endl;
+            cout << "3) View profile" << endl;
+            cout << "4) Update profile" << endl;
+            cout << "5) Logout" << endl;
+            // todo: think about 6) Delete account
+            cin >> opt;
+        } while (opt > 5 || opt < 1);
+
+        return opt;
     }
 };
 
@@ -103,6 +126,24 @@ public:
         ofstream drivers_cout("drivers.txt", ios::app);
         drivers_cout.write((char *)this, sizeof(*this));
         drivers_cout.close();
+    }
+
+    int displayMenu() {
+        int opt = 0;
+
+        do
+        {
+            cout << endl
+                << "1) View users currently searching for ride" << endl;
+            cout << "2) View history" << endl;
+            cout << "3) View profile" << endl;
+            cout << "4) Update profile" << endl;
+            cout << "5) Logout" << endl;
+            // todo: think about 6) Delete account
+            cin >> opt;
+        } while (opt > 5 || opt < 1);
+
+        return opt;
     }
 };
 
