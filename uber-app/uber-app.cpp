@@ -6,6 +6,7 @@ using namespace std;
 
 int main()
 {
+	// TODO: any string input must not have a comma
 	cout << endl
 		<< "Welcome to Uber Application!" << endl;
 	int opt1, opt2;
@@ -35,13 +36,10 @@ int main()
 				<< "Enter last name: ";
 			cin >> lastName;
 
-			// todo: validation of names regarding spaces
+			// TODO: validation of names regarding spaces
 
 			is_err = firstName.length() < 2 || firstName.length() > 30 || lastName.length() < 2 || lastName.length() > 30;
 		} while (is_err);
-
-		// todo: think about reducing the code inside main and increasing the code inside classes (for later)
-		// todo: think about making validation functions separately in another file (for later maybe)
 
 		do
 		{
@@ -61,8 +59,8 @@ int main()
 				cerr << endl
 				<< "Error: invalid date of birth" << endl;
 
-			// todo: make 2023 and 1920 into a variable
-			// todo: check if driver is of at least 18 years old
+			// TODO: make 2023 and 1920 into a variable
+			// TODO: check if driver is of at least 18 years old
 		} while (is_err);
 
 		bool flag1;
@@ -101,43 +99,45 @@ int main()
 			{
 				if (opt2 == 1)
 				{
-					ifstream passengers_cin("passengers.txt");
-					if (passengers_cin)
-					{
-						Passenger passenger;
-						while (passengers_cin.eof() == 0)
-						{
-							passengers_cin.read((char*)&passenger, sizeof(passenger));
-							if (passenger.getPhoneNum() == phoneNum)
-							{
-								cerr << endl
-									<< "Error: passenger already exists with this phone number" << endl;
-								phoneNumExists = true;
-								break;
-							}
-						}
-					}
-					passengers_cin.close();
+					// TODO: check if phone number already exists
+					// ifstream passengers_cin("passengers.txt");
+					// if (passengers_cin)
+					// {
+					// 	Passenger passenger;
+					// 	while (!passengers_cin.eof())
+					// 	{
+					// 		passengers_cin.read((char*)&passenger, sizeof(passenger));
+					// 		if (passenger.getPhoneNum() == phoneNum)
+					// 		{
+					// 			cerr << endl
+					// 				<< "Error: passenger already exists with this phone number" << endl;
+					// 			phoneNumExists = true;
+					// 			break;
+					// 		}
+					// 	}
+					// }
+					// passengers_cin.close();
 				}
 				else if (opt2 == 2)
 				{
-					ifstream drivers_cin("drivers.txt");
-					if (drivers_cin)
-					{
-						Driver driver;
-						while (drivers_cin.eof() == 0)
-						{
-							drivers_cin.read((char*)&driver, sizeof(driver));
-							if (driver.getPhoneNum() == phoneNum)
-							{
-								cerr << endl
-									<< "Error: driver already exists with this phone number" << endl;
-								phoneNumExists = true;
-								break;
-							}
-						}
-					}
-					drivers_cin.close();
+					// TODO: check if phone number already exists
+					// ifstream drivers_cin("drivers.txt");
+					// if (drivers_cin)
+					// {
+					// 	Driver driver;
+					// 	while (drivers_cin.eof() == 0)
+					// 	{
+					// 		drivers_cin.read((char*)&driver, sizeof(driver));
+					// 		if (driver.getPhoneNum() == phoneNum)
+					// 		{
+					// 			cerr << endl
+					// 				<< "Error: driver already exists with this phone number" << endl;
+					// 			phoneNumExists = true;
+					// 			break;
+					// 		}
+					// 	}
+					// }
+					// drivers_cin.close();
 				}
 			}
 		} while (is_err || phoneNumExists);
@@ -213,29 +213,27 @@ int main()
 
 			cout << endl << "Enter plate Number of the vehicle: ";
 			cin >> plateNum;
-			// todo: validation of name, model, noOfSeats, color, plateNum
+			// TODO: validation of name, model, noOfSeats, color, plateNum
 
 			type = typesMenu();
 
-			// todo: keep check of id and change 0 to id in next line
+			// TODO: keep check of id and change 0 to id in next line
 			Vehicle vehicle(model, noOfSeats, name, plateNum, color, type);
 			Driver driver(0, day, month, year, firstName, lastName, phoneNum, password, vehicle, nic);
 			driver.appendToFile();
 		}
 		else
 		{ // passenger
-			// todo: keep check of id and change 0 to id in next line
+			// TODO: keep check of id and change 0 to id in next line
 			Passenger passenger(0, day, month, year, firstName, lastName, phoneNum, password);
 			passenger.appendToFile();
 		}
 
 		// signed up
-		//main();
-		//system("");
+		// TODO: show main menu again
 	}
 	else
 	{ // opt1 = 2 (login)
-		// todo: ask for login info
 		// it is already stored in opt2 whether the user wants to be logged in as driver or passenger
 		cout << endl
 			<< "Enter phone number: " << endl;
@@ -278,7 +276,7 @@ int main()
 					<< "Error: invalid credentials" << endl;
 				// show first menu again
 				main();
-				// todo: think of a more efficient way of going back to start of main
+				// TODO: gotta think of a more efficient way of going back to start of main
 			}
 			else
 			{
