@@ -3,8 +3,8 @@
 ### Introduction:
 
 - This is group project that has to be made using object oriented programming.
-- It involves management of passengers, drivers, and rides/bookings.
 - It is a console-based application made using C++.
+- It involves management of passengers, drivers, and rides/bookings.
 
 ### Group Members:
 
