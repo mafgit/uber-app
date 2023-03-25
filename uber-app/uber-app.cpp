@@ -1,8 +1,5 @@
-#include <iostream>
-#include <fstream>
-#include <string>
 #include "Header.h"
-using namespace std;
+#include <string>
 
 int main()
 {
@@ -98,48 +95,16 @@ int main()
 			else
 			{
 				if (opt2 == 1)
-				{
-					// TODO: check if phone number already exists
-					// ifstream passengers_cin("passengers.txt");
-					// if (passengers_cin)
-					// {
-					// 	Passenger passenger;
-					// 	while (!passengers_cin.eof())
-					// 	{
-					// 		passengers_cin.read((char*)&passenger, sizeof(passenger));
-					// 		if (passenger.getPhoneNum() == phoneNum)
-					// 		{
-					// 			cerr << endl
-					// 				<< "Error: passenger already exists with this phone number" << endl;
-					// 			phoneNumExists = true;
-					// 			break;
-					// 		}
-					// 	}
-					// }
-					// passengers_cin.close();
-				}
+					phoneNumExists = User::doesPhoneNumExist(phoneNum, "passengers.txt");
+					
 				else if (opt2 == 2)
-				{
-					// TODO: check if phone number already exists
-					// ifstream drivers_cin("drivers.txt");
-					// if (drivers_cin)
-					// {
-					// 	Driver driver;
-					// 	while (drivers_cin.eof() == 0)
-					// 	{
-					// 		drivers_cin.read((char*)&driver, sizeof(driver));
-					// 		if (driver.getPhoneNum() == phoneNum)
-					// 		{
-					// 			cerr << endl
-					// 				<< "Error: driver already exists with this phone number" << endl;
-					// 			phoneNumExists = true;
-					// 			break;
-					// 		}
-					// 	}
-					// }
-					// drivers_cin.close();
-				}
+					phoneNum = User::doesPhoneNumExist(phoneNum, "drivers.txt");
 			}
+
+			if (phoneNumExists) {
+				cerr << endl << "Error: this phone number is already in use" << endl;
+			}
+
 		} while (is_err || phoneNumExists);
 
 		if (opt2 == 2)
@@ -244,83 +209,87 @@ int main()
 
 		if (opt2 == 1)
 		{
-			bool found = 0;
-			ifstream passengers_cin("passengers.txt");
+			// TODO: Login
+			
+			//bool found = 0;
+			//ifstream passengers_in("passengers.txt");
 
-			Passenger passenger;
-			if (passengers_cin) {
-				while (!found && !passengers_cin.eof())
-				{
-					/*
-						found	eof		run while loop
-						0		0		1
-						0		1		0
-						1		0		0
-						1		1		0
-					*/
-					passengers_cin.read((char*)&passenger, sizeof(passenger));
-					//cout << endl << passenger.getPassword() << endl << passenger.getPhoneNum() << endl;
-					if (password == passenger.getPassword() && phoneNum == passenger.getPhoneNum())
-					{
-						found = 1;
-					}
-				}
-			}
+			//Passenger passenger;
+			//if (passengers_in) {
+			//	while (!found && !passengers_in.eof())
+			//	{
+			//		/*
+			//			found	eof		run while loop
+			//			0		0		1
+			//			0		1		0
+			//			1		0		0
+			//			1		1		0
+			//		*/
+			//		passengers_in.read((char*)&passenger, sizeof(passenger));
+			//		//cout << endl << passenger.getPassword() << endl << passenger.getPhoneNum() << endl;
+			//		if (password == passenger.getPassword() && phoneNum == passenger.getPhoneNum())
+			//		{
+			//			found = 1;
+			//		}
+			//	}
+			//}
 
-			passengers_cin.close();
+			//passengers_in.close();
 
-			if (!found)
-			{
-				system("cls");
-				cerr << endl
-					<< "Error: invalid credentials" << endl;
-				// show first menu again
-				main();
-				// TODO: gotta think of a more efficient way of going back to start of main
-			}
-			else
-			{
-				// logged in as passenger
-				system("cls");
-				cout << endl << "Logged in as passenger" << endl;
-				int opt = passenger.displayMenu();
-				return 0;
-			}
+			//if (!found)
+			//{
+			//	system("cls");
+			//	cerr << endl
+			//		<< "Error: invalid credentials" << endl;
+			//	// show first menu again
+			//	main();
+			//	// TODO: gotta think of a more efficient way of going back to start of main
+			//}
+			//else
+			//{
+			//	// logged in as passenger
+			//	system("cls");
+			//	cout << endl << "Logged in as passenger" << endl;
+			//	int opt = passenger.displayMenu();
+			//	return 0;
+			//}
 		}
 		else if (opt2 == 2)
 		{
-			bool found = 0;
-			ifstream drivers_cin("drivers.txt");
+			// TODO: Login
+			
+			//bool found = 0;
+			//ifstream drivers_in("drivers.txt");
 
-			Driver driver;
-			if (drivers_cin) {
-				while (!drivers_cin.eof() && !found)
-				{
-					drivers_cin.read((char*)&driver, sizeof(driver));
-					if (password == driver.getPassword() && phoneNum == driver.getPhoneNum())
-					{
-						found = 1;
-					}
-				}
-			}
+			//Driver driver;
+			//if (drivers_in) {
+			//	while (!drivers_in.eof() && !found)
+			//	{
+			//		drivers_in.read((char*)&driver, sizeof(driver));
+			//		if (password == driver.getPassword() && phoneNum == driver.getPhoneNum())
+			//		{
+			//			found = 1;
+			//		}
+			//	}
+			//}
 
-			drivers_cin.close();
+			//drivers_in.close();
 
-			if (!found)
-			{
-				system("cls");
-				cerr << endl
-					<< "Error: invalid credentials" << endl;
-				main();
-			}
-			else
-			{
-				// logged in as driver
-				system("cls");
-				cout << endl << "Logged in as passenger" << endl;
-				int opt = driver.displayMenu();
-				return 0;
-			}
+			//if (!found)
+			//{
+			//	system("cls");
+			//	cerr << endl
+			//		<< "Error: invalid credentials" << endl;
+			//	main();
+			//}
+			//else
+			//{
+			//	// logged in as driver
+			//	system("cls");
+			//	cout << endl << "Logged in as passenger" << endl;
+			//	int opt = driver.displayMenu();
+			//	return 0;
+			//}
 		}
 	}
 }

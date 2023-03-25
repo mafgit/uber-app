@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include <fstream>
-
+#include <sstream>
 using namespace std;
 
 // TODO: admin class
@@ -41,6 +41,37 @@ public:
     {
         // TODO: view profile
     }
+
+    static bool doesPhoneNumExist(string phoneNum, string fileName) {
+        ifstream file_in("passengers.txt");
+        istringstream ss;
+        bool phoneNumExists = false;
+
+        if (file_in)
+        {
+            string line;
+            string skipString, phoneNumString;
+            while (getline(file_in, line))
+            {
+                ss.clear();
+                ss.str(line);
+
+                for (int i = 0; i < 6; i++) {
+                    getline(ss, skipString, ',');
+                }
+
+                getline(ss, phoneNumString, ',');
+
+                if (phoneNumString == phoneNum) {
+                    phoneNumExists = true;
+                    break;
+                }
+            }
+        }
+
+        file_in.close();
+        return phoneNumExists;
+    }
 };
 
 class Passenger : public User
@@ -53,10 +84,6 @@ public:
 
     void appendToFile()
     {
-        // ofstream passengers_cout("passengers.txt", ios::app);
-        // passengers_cout.write((char *)this, sizeof(*this));
-        // passengers_cout.close();
-
         ofstream file("passengers.txt", ios::app);
         file << id << "," << day << "," << month << "," << year << "," << firstName << "," << lastName << "," << phoneNum << "," << password << "\n";
         file.close();
@@ -137,10 +164,6 @@ public:
 
     void appendToFile()
     {
-        // ofstream drivers_cout("drivers.txt", ios::app);
-        // drivers_cout.write((char *)this, sizeof(*this));
-        // drivers_cout.close();
-
         ofstream file("drivers.txt", ios::app);
         file << id << "," << day << "," << month << "," << year << "," << firstName << "," << lastName << "," << phoneNum << "," << password << ","
              << vehicle.getModel() << "," << vehicle.getNoOfSeats() << "," << vehicle.getName() << "," << vehicle.getPlateNum() << "," << vehicle.getColor() << "," << vehicle.getType() << "\n";
