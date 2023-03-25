@@ -218,6 +218,7 @@ int main()
 		bool found = 0;
 		if (opt2 == 1)
 		{
+			// TODO: try to remove code duplication in login
 			ifstream passengers_in("passengers.txt");
 			string idStr, dayStr, monthStr, yearStr, firstNameStr, lastNameStr, phoneNumStr, passwordStr;
 			string line;
@@ -264,7 +265,7 @@ int main()
 					 << "Error: invalid credentials" << endl;
 				// show first menu again
 				//	main();
-				// TODO: gotta think of a more efficient way of going back to start of main
+				// TODO: think of a more efficient way of going back to start of main
 			}
 			else
 			{
@@ -279,7 +280,6 @@ int main()
 		}
 		else if (opt2 == 2)
 		{
-			// TODO: Login
 			ifstream drivers_in("drivers.txt");
 			string idStr, dayStr, monthStr, yearStr, firstNameStr, lastNameStr, phoneNumStr, passwordStr;
 			string modelStr, noOfSeatsStr, nameStr, plateNumStr, colorStr, typeStr;
@@ -334,8 +334,8 @@ int main()
 				cerr << endl
 					 << "Error: invalid credentials" << endl;
 				// show first menu again
-				//	main();
-				// TODO: gotta think of a more efficient way of going back to start of main
+				// main();
+				// TODO: think of a more efficient way of going back to start of main
 			}
 			else
 			{
