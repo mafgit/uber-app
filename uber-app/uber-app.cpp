@@ -1,4 +1,6 @@
-#include "Header.h"
+#include "Classes.h"
+#include "Validations.h"
+#include "Menus.h"
 #include <string>
 
 int main()
@@ -33,9 +35,10 @@ int main()
 				 << "Enter last name: ";
 			cin >> lastName;
 
-			// TODO: validation of names regarding spaces
+			is_err = !isNameValid(firstName) || !isNameValid(lastName);
 
-			is_err = firstName.length() < 2 || firstName.length() > 30 || lastName.length() < 2 || lastName.length() > 30;
+			if (is_err)
+				cerr << endl << "Error: both names must contain at least 2 and at most 30 characters" << endl;
 		} while (is_err);
 
 		do
@@ -44,7 +47,7 @@ int main()
 				 << "Enter date of your date of birth: ";
 			cin >> day;
 			cout << endl
-				 << "Enter month of your date of birth: ";
+				 << "Enter month [1-12] of your date of birth: ";
 			cin >> month;
 			cout << endl
 				 << "Enter year of your date of birth: ";
@@ -74,31 +77,18 @@ int main()
 				 << "Enter phone number (start with 0): ";
 			cin >> phoneNum;
 
-			if (phoneNum[0] != '0' || phoneNum[1] != '3')
-				flag1 = true;
-			else
-			{
-				for (int i = 0; i < phoneNum.length(); i++)
-				{
-					if (!isdigit(phoneNum[i]))
-					{
-						flag2 = true;
-						break;
-					}
-				}
-			}
+			is_err = !isPhoneNumValid(phoneNum);
 
-			is_err = phoneNum.length() != 11 || flag1 == true || flag2 == true;
 			if (is_err)
 				cerr << endl
 					 << "Error: invalid phone number" << endl;
 			else
 			{
 				if (opt2 == 1)
-					phoneNumExists = User::doesPhoneNumExist(phoneNum, "passengers.txt");
+					phoneNumExists = doesPhoneNumExist(phoneNum, "passengers.txt");
 
 				else if (opt2 == 2)
-					phoneNum = User::doesPhoneNumExist(phoneNum, "drivers.txt");
+					phoneNum = doesPhoneNumExist(phoneNum, "drivers.txt");
 			}
 
 			if (phoneNumExists)
@@ -113,27 +103,11 @@ int main()
 		{
 			do
 			{
-				flag1 = false;
-				flag2 = false;
 				cout << endl
 					 << "Enter NIC number (without dashes): ";
 				cin >> nic;
 
-				if (nic[0] != '4')
-					flag1 = true;
-				else
-				{
-					for (int i = 0; i < nic.length(); i++)
-					{
-						if (!isdigit(nic[i]))
-						{
-							flag2 = true;
-							break;
-						}
-					}
-				}
-
-				is_err = nic.length() != 13 || flag1 || flag2;
+				is_err = !isValidNIC(nic);
 
 				if (is_err)
 					cerr << endl
