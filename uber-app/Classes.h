@@ -61,33 +61,24 @@ public:
 
 class Vehicle
 {
-    int model, noOfSeats;
-    string name, plateNum, color, type;
-    // types: bike, ride_ac, ride, ride_mini, auto
-public:
-    Vehicle()
-    {
-        model = 0;
-        noOfSeats = 0;
-        name = "";
-        plateNum = "";
-        color = "";
-        type = "";
-    }
+    int model = 0, noOfSeats = 0;
+    string name = "", plateNum = "", color = "", type = "";
+    // TODO: name doesn't accept space so think about attributes such as brand, make, etc
 
-    Vehicle(int model, int noOfSeats, string name, string plateNum, string color, string type)
+public:
+    Vehicle() {}
+
+    Vehicle(string type, int model, string name, string plateNum, string color)
     {
+        this->type = type;
         this->model = model;
-        this->noOfSeats = noOfSeats;
         this->name = name;
         this->plateNum = plateNum;
         this->color = color;
-        this->type = type;
     }
 
     // getters
     int getModel() { return model; }
-    int getNoOfSeats() { return noOfSeats; }
     string getName() { return name; }
     string getPlateNum() { return plateNum; }
     string getColor() { return color; }
@@ -96,26 +87,24 @@ public:
 
 class Driver : public User
 {
-    int sumOfRatings, userCountOfRating;
+    int sumOfRatings = 0, ratedBy = 0;
     Vehicle vehicle;
-    string nic;
+    string nic = "";
 
 public:
-    Driver()
-    {
-        sumOfRatings = 0;
-        userCountOfRating = 0;
-        nic = "";
-    }
+    Driver() {}
 
-    Driver(int id, int day, int month, int year, string firstName, string lastName, string phoneNum, string password, Vehicle vehicle, string nic)
-        : User(id, day, month, year, firstName, lastName, phoneNum, password), sumOfRatings(0), userCountOfRating(0), vehicle(vehicle), nic(nic) {}
+    Driver(int id, int day, int month, int year, string firstName, string lastName, string phoneNum, string password, string nic, Vehicle vehicle)
+        : User(id, day, month, year, firstName, lastName, phoneNum, password), sumOfRatings(0), ratedBy(0), nic(nic), vehicle(vehicle) {}
 
     void appendToFile()
     {
+        // FIXME: phone number not getting saved in file, neither is its value correct in uber-app.cpp over driver.appendToFile()
         ofstream file("drivers.txt", ios::app);
-        file << id << "," << day << "," << month << "," << year << "," << firstName << "," << lastName << "," << phoneNum << "," << password << ","
-             << vehicle.getModel() << "," << vehicle.getNoOfSeats() << "," << vehicle.getName() << "," << vehicle.getPlateNum() << "," << vehicle.getColor() << "," << vehicle.getType() << "\n";
+        file << id << "," << day << "," << month << "," << year << "," << firstName << "," << lastName << ","
+             << phoneNum << "," << password << "," << nic << "," << vehicle.getType() << "," << vehicle.getModel() << "," << vehicle.getName() << "," << vehicle.getPlateNum()
+             << "," << vehicle.getColor() << "," << sumOfRatings << "," << ratedBy << "\n";
+
         file.close();
     }
 

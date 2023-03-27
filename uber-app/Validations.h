@@ -1,5 +1,6 @@
 #pragma once
 #include "Classes.h"
+#include <regex>
 
 bool doesPhoneNumExist(string phoneNum, string fileName)
 {
@@ -35,7 +36,7 @@ bool doesPhoneNumExist(string phoneNum, string fileName)
     return phoneNumExists;
 }
 
-bool containsAtMost(string str, char ch, int max)
+bool countOccurrences(string str, char ch)
 {
     int occurrences = 0;
 
@@ -45,28 +46,27 @@ bool containsAtMost(string str, char ch, int max)
             occurrences++;
     }
 
-    return occurrences <= max;
+    return occurrences;
 }
 
 bool containsComma(string str)
 {
-    return !containsAtMost(str, ',', 0);
+    return countOccurrences(str, ',') >= 1;
 }
 
-bool isNameValid(string name)
+bool isValidName(string name)
 {
-    // TODO: check if only valid characters for name are input
     bool valid = name.length() >= 2 && name.length() <= 30;
 
     if (!valid)
         return valid;
 
-    bool includesComma = containsComma(name);
-
-    if (includesComma)
-    {
-        valid = false;
-        return valid;
+    for (int i = 0; i < name.length(); i++) {
+        // includes comma check
+        if (!isalnum(name[i])) {
+            valid = false;
+            return valid;
+        }
     }
 
     return valid;
@@ -77,17 +77,9 @@ bool isPhoneNumValid(string phoneNum)
     bool valid = phoneNum.length() == 11;
 
     if (!valid)
-        return valid;
+        return false;
 
-    if (phoneNum[0] == '0' || phoneNum[1] == '3')
-    {
-        valid = false;
-        return valid;
-    }
-
-    bool includesComma = containsComma(phoneNum);
-
-    if (includesComma)
+    if (phoneNum[0] != '0' || phoneNum[1] != '3')
     {
         valid = false;
         return valid;
@@ -95,6 +87,7 @@ bool isPhoneNumValid(string phoneNum)
 
     for (int i = 0; i < phoneNum.length(); i++)
     {
+        // includes comma check
         if (!isdigit(phoneNum[i]))
         {
             valid = false;
@@ -102,12 +95,12 @@ bool isPhoneNumValid(string phoneNum)
         }
     }
 
-    return false;
+    return valid;
 }
 
 bool isValidNIC(string nic)
 {
-    bool valid = nic.length() != 13;
+    bool valid = nic.length() == 13;
     
     if (!valid)
         return valid;
@@ -117,22 +110,22 @@ bool isValidNIC(string nic)
         return valid;
     }
 
-    bool includesComma = containsComma(nic);
-
-    if (includesComma)
-    {
-        valid = false;
-        return valid;
-    }
-
     for (int i = 0; i < nic.length(); i++)
     {
         if (!isdigit(nic[i]))
         {
+            // includes comma check
             valid = false;
-            break;
+            return valid;
         }
     }
 
     return valid; 
+}
+
+bool isValidPlateNum(string plateNum) {
+    // AA-111
+    // AAA-1111
+    regex plateNumRegex("[A-Z]{2,3}-[0-9]{3,4}");
+    return regex_match(plateNum, plateNumRegex);
 }

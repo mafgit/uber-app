@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 using namespace std;
 
@@ -39,26 +40,26 @@ string typesMenu()
     int opt = 0;
 
     cout << endl
-         << "Enter a number for the type of your vehicle: " << endl;
+         << "Enter a number to select the type of your vehicle: " << endl;
     do
     {
         cout << endl
-             << "1) Bike" << endl;
-        cout << "2) Ride AC" << endl;
-        cout << "3) Ride" << endl;
-        cout << "4) Ride Mini" << endl;
-        cout << "5) Auto" << endl;
+             << "1) Uber Auto [Rickshaw] [3 passengers]" << endl;
+        cout << "2) Uber Moto [Bike] [1 passenger]" << endl;
+        cout << "3) UberX [A private ride at an everyday price] [4 passengers]" << endl;
+        cout << "4) UberXL [Affordable rides for groups up to 6] [6 passengers]" << endl;
+        cout << "5) Uber Black [Premium rides in luxury cars]" << endl;
         cin >> opt;
     } while (opt < 1 || opt > 5);
 
     if (opt == 1)
-        return "Bike";
+        return "Uber Auto";
     else if (opt == 2)
-        return "Ride AC";
+        return "Uber Moto";
     else if (opt == 3)
-        return "Ride";
+        return "UberX";
     else if (opt == 4)
-        return "Ride Mini";
+        return "UberXL";
     else
-        return "Auto";
+        return "Uber Black";
 }

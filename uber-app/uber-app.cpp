@@ -35,22 +35,24 @@ int main()
 				 << "Enter last name: ";
 			cin >> lastName;
 
-			is_err = !isNameValid(firstName) || !isNameValid(lastName);
+			is_err = !isValidName(firstName) || !isValidName(lastName);
 
 			if (is_err)
-				cerr << endl << "Error: both names must contain at least 2 and at most 30 characters" << endl;
+				cerr << endl
+					 << "Error: both names must contain at least 2 and at most 30 characters" << endl;
 		} while (is_err);
 
 		do
 		{
 			cout << endl
-				 << "Enter date of your date of birth: ";
+				 << "Enter date of your birth [1 to 31]: ";
+			// TODO: check for no of days being correct for a particular month can be implemented
 			cin >> day;
 			cout << endl
-				 << "Enter month [1-12] of your date of birth: ";
+				 << "Enter month of your birth [1 to 12]: ";
 			cin >> month;
 			cout << endl
-				 << "Enter year of your date of birth: ";
+				 << "Enter year of your birth: ";
 			cin >> year;
 
 			is_err = day < 1 || day > 31 || month < 1 || month > 12 || year > 2023 || year < 1920;
@@ -63,14 +65,10 @@ int main()
 			// TODO: check if driver is of at least 18 years old
 		} while (is_err);
 
-		bool flag1;
-		bool flag2;
 		bool phoneNumExists;
 
 		do
 		{
-			flag1 = false;
-			flag2 = false;
 			phoneNumExists = false;
 
 			cout << endl
@@ -133,39 +131,50 @@ int main()
 				cerr << endl
 					 << "Error: passwords do not match" << endl;
 
-		} while (password.length() < 6 || password != confirmPassword);
+		} while (password.length() < 6 || password != confirmPassword || containsComma(password));
 
 		if (opt2 == 2)
 		{ // driver
-			int model, noOfSeats;
+			int model;
 			string plateNum, color, type, name;
 
-			cout << endl
-				 << "Enter name of the vehicle: ";
-			cin >> name;
+			do
+			{
+				cout << endl
+					 << "Enter name of the vehicle: ";
+				cin >> name;
+			} while (!isValidName(name));
 
-			cout << endl
-				 << "Enter model of the vehicle: ";
-			cin >> model;
+			do
+			{
 
-			cout << endl
-				 << "Enter number of seats in the vehicle: ";
-			cin >> noOfSeats;
+				cout << endl
+					 << "Enter model of the vehicle [any year from 2006 to the current year]: ";
+				cin >> model;
+			} while (model < 2006 || model > 2023); // TODO: make 2023 into a variable & keep incrementing 2006
 
-			cout << endl
-				 << "Enter color of the vehicle: ";
-			cin >> color;
+			do
+			{
 
-			cout << endl
-				 << "Enter plate Number of the vehicle: ";
-			cin >> plateNum;
-			// TODO: validation of name, model, noOfSeats, color, plateNum
+				cout << endl
+					 << "Enter color of the vehicle: ";
+				cin >> color;
+			} while (!isValidName(color));
+
+			do
+			{
+
+				cout << endl
+					 << "Enter plate number of the vehicle: ";
+				cin >> plateNum;
+			} while (!isValidPlateNum(plateNum));
 
 			type = typesMenu();
 
 			// TODO: keep check of id and change 0 to id in next line
-			Vehicle vehicle(model, noOfSeats, name, plateNum, color, type);
-			Driver driver(0, day, month, year, firstName, lastName, phoneNum, password, vehicle, nic);
+			Vehicle vehicle(type, model, name, plateNum, color);
+
+			Driver driver(0, day, month, year, firstName, lastName, phoneNum, password, nic, vehicle);
 			driver.appendToFile();
 		}
 		else
@@ -249,14 +258,13 @@ int main()
 					 << "Logged in as passenger" << endl;
 				Passenger passenger(stoi(idStr), stoi(dayStr), stoi(monthStr), stoi(yearStr), firstNameStr, lastNameStr, phoneNumStr, passwordStr);
 				int opt = passenger.displayMenu();
-				return 0;
 			}
 		}
 		else if (opt2 == 2)
 		{
 			ifstream drivers_in("drivers.txt");
 			string idStr, dayStr, monthStr, yearStr, firstNameStr, lastNameStr, phoneNumStr, passwordStr;
-			string modelStr, noOfSeatsStr, nameStr, plateNumStr, colorStr, typeStr;
+			string typeStr, modelStr, nameStr, plateNumStr, colorStr;
 			string nicStr;
 			string line;
 
@@ -284,13 +292,12 @@ int main()
 					getline(ss, lastNameStr, ',');
 					getline(ss, phoneNumStr, ',');
 					getline(ss, passwordStr, ',');
+					getline(ss, nicStr, ',');
+					getline(ss, typeStr, ',');
 					getline(ss, modelStr, ',');
-					getline(ss, noOfSeatsStr, ',');
 					getline(ss, nameStr, ',');
 					getline(ss, plateNumStr, ',');
 					getline(ss, colorStr, ',');
-					getline(ss, typeStr, ',');
-					getline(ss, nicStr, ',');
 
 					if (phoneNum == phoneNumStr && password == passwordStr)
 					{
@@ -317,12 +324,13 @@ int main()
 				system("cls");
 				cout << endl
 					 << "Logged in as driver" << endl;
-				
-				Vehicle vehicle(stoi(modelStr), stoi(noOfSeatsStr), nameStr, plateNumStr, colorStr, typeStr);
-				Driver driver(stoi(idStr), stoi(dayStr), stoi(monthStr), stoi(yearStr), firstNameStr, lastNameStr, phoneNumStr, passwordStr, vehicle, nicStr);
+
+				Vehicle vehicle(typeStr, stoi(modelStr), nameStr, plateNumStr, colorStr);
+				Driver driver(stoi(idStr), stoi(dayStr), stoi(monthStr), stoi(yearStr), firstNameStr, lastNameStr, phoneNumStr, passwordStr, nicStr, vehicle);
 				int opt = driver.displayMenu();
-				return 0;
 			}
 		}
 	}
+
+	system("pause");
 }
