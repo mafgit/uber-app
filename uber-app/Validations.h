@@ -56,7 +56,7 @@ bool containsComma(string str)
 
 bool isValidName(string name)
 {
-    bool valid = name.length() >= 2 && name.length() <= 30;
+    bool valid = name.length() >= 1 && name.length() <= 30;
 
     if (!valid)
         return valid;

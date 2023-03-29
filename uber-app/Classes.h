@@ -61,28 +61,31 @@ public:
 
 class Vehicle
 {
-    int model = 0, noOfSeats = 0;
-    string name = "", plateNum = "", color = "", type = "";
-    // TODO: name doesn't accept space so think about attributes such as brand, make, etc
+    string type = "", make = "", model = "", trimLevel = "", plateNum = "", color = "";
+    int yearOfManufacture = 0;
 
 public:
     Vehicle() {}
 
-    Vehicle(string type, int model, string name, string plateNum, string color)
+    Vehicle(string type, int yearOfManufacture, string make, string model, string trimLevel, string plateNum, string color)
     {
         this->type = type;
+        this->yearOfManufacture = yearOfManufacture;
+        this->make = make;
         this->model = model;
-        this->name = name;
+        this->trimLevel = trimLevel;
         this->plateNum = plateNum;
         this->color = color;
     }
 
     // getters
-    int getModel() { return model; }
-    string getName() { return name; }
+    string getMake() { return make; }
+    string getModel() { return model; }
+    string getTrimLevel() { return trimLevel; }
     string getPlateNum() { return plateNum; }
     string getColor() { return color; }
     string getType() { return type; }
+    int getYearOfManufacturer() { return yearOfManufacture; }
 };
 
 class Driver : public User
@@ -101,8 +104,7 @@ public:
     {
         ofstream file("drivers.txt", ios::app);
         file << id << "," << day << "," << month << "," << year << "," << firstName << "," << lastName << ","
-             << phoneNum << "," << password << "," << nic << "," << vehicle.getType() << "," << vehicle.getModel() << "," << vehicle.getName() << "," << vehicle.getPlateNum()
-             << "," << vehicle.getColor() << "," << sumOfRatings << "," << ratedBy << "\n";
+             << phoneNum << "," << password << "," << nic << "," << vehicle.getType() << "," << vehicle.getYearOfManufacturer() << "," << vehicle.getMake() << "," << vehicle.getModel() << "," << vehicle.getTrimLevel() << "," << vehicle.getPlateNum() << "," << vehicle.getColor() << "," << sumOfRatings << "," << ratedBy << "\n";
 
         file.close();
     }

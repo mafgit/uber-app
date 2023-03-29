@@ -11,7 +11,6 @@ int main()
 	int opt1, opt2;
 
 start:
-
 	opt1 = menu1();
 	if (opt1 == 3)
 		return 0;
@@ -41,7 +40,7 @@ start:
 
 			if (is_err)
 				cerr << endl
-					 << "Error: both names must contain at least 2 and at most 30 characters" << endl;
+					 << "Error: both names must contain at least 1 and at most 30 characters" << endl;
 		} while (is_err);
 
 		do
@@ -107,6 +106,7 @@ start:
 					cerr << endl
 						 << "Error: invalid NIC" << endl;
 			} while (is_err);
+		// TODO: check if NIC is already used 
 
 		do
 		{
@@ -130,44 +130,60 @@ start:
 
 		if (opt2 == 2)
 		{ // driver
-			int model;
-			string plateNum, color, type, name;
+
+			string type, make, model, trimLevel, plateNum, color;
+			int yearOfManufacture;
 
 			type = typesMenu();
 
 			do
 			{
 				cout << endl
-					 << "Enter name of the vehicle: ";
-				cin >> name;
-			} while (!isValidName(name));
+					 << "Enter year of manufacture of your vehicle [2006 - 2023]: ";
+				cin >> yearOfManufacture;
+			} while (yearOfManufacture < 2006 || yearOfManufacture > 2023); // TODO: make 2023 into a variable & keep incrementing 2006
+
+			do
+			{
+				cout << endl
+					 << "Enter make (manufacturer) of the vehicle [e.g. Toyota]: ";
+				cin >> make;
+			} while (!isValidName(make));
 
 			do
 			{
 
 				cout << endl
-					 << "Enter model of the vehicle [any year from 2006 to the current year]: ";
+					 << "Enter model of the vehicle [e.g. Corolla]: ";
 				cin >> model;
-			} while (model < 2006 || model > 2023); // TODO: make 2023 into a variable & keep incrementing 2006
+			} while (!isValidName(model));
 
 			do
 			{
 
 				cout << endl
-					 << "Enter color of the vehicle: ";
-				cin >> color;
-			} while (!isValidName(color));
+					 << "Enter trim level of the vehicle [e.g. LE]: ";
+				cin >> trimLevel;
+			} while (!isValidName(trimLevel));
 
 			do
 			{
 
 				cout << endl
-					 << "Enter plate number of the vehicle: ";
+					 << "Enter plate number of the vehicle [e.g. AAA-1111]: ";
 				cin >> plateNum;
 			} while (!isValidPlateNum(plateNum));
 
+			do
+			{
+
+				cout << endl
+					 << "Enter color of the vehicle [e.g. blue]: ";
+				cin >> color;
+			} while (!isValidName(color));
+
 			// TODO: keep check of id and change 0 to id in next line
-			Vehicle vehicle(type, model, name, plateNum, color);
+			Vehicle vehicle(type, yearOfManufacture, make, model, trimLevel, plateNum, color);
 
 			Driver driver(0, day, month, year, firstName, lastName, phoneNum, password, nic, vehicle);
 			driver.appendToFile();
@@ -180,7 +196,9 @@ start:
 		}
 
 		// signed up
-		// TODO: show main menu again
+		system("cls");
+		cout << endl
+			 << "Signed up!" << endl;
 		goto start;
 	}
 	else
@@ -258,10 +276,10 @@ start:
 		{
 			ifstream drivers_in("drivers.txt");
 			string idStr, dayStr, monthStr, yearStr, firstNameStr, lastNameStr, phoneNumStr, passwordStr;
-			string typeStr, modelStr, nameStr, plateNumStr, colorStr;
+			string typeStr, yearOfManufactureStr, modelStr, makeStr, trimLevelStr, plateNumStr, colorStr;
 			string nicStr;
 			string line;
-
+			
 			if (drivers_in)
 			{
 				istringstream ss;
@@ -280,8 +298,10 @@ start:
 					getline(ss, passwordStr, ',');
 					getline(ss, nicStr, ',');
 					getline(ss, typeStr, ',');
+					getline(ss, yearOfManufactureStr, ',');
+					getline(ss, makeStr, ',');
 					getline(ss, modelStr, ',');
-					getline(ss, nameStr, ',');
+					getline(ss, trimLevelStr, ',');
 					getline(ss, plateNumStr, ',');
 					getline(ss, colorStr, ',');
 
@@ -309,7 +329,7 @@ start:
 				cout << endl
 					 << "Logged in as driver" << endl;
 
-				Vehicle vehicle(typeStr, stoi(modelStr), nameStr, plateNumStr, colorStr);
+				Vehicle vehicle(typeStr, stoi(yearOfManufactureStr), modelStr, makeStr, trimLevelStr, plateNumStr, colorStr);
 				Driver driver(stoi(idStr), stoi(dayStr), stoi(monthStr), stoi(yearStr), firstNameStr, lastNameStr, phoneNumStr, passwordStr, nicStr, vehicle);
 				int opt = driver.displayMenu();
 			}
