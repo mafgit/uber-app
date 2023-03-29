@@ -2,38 +2,40 @@
 #include "Classes.h"
 #include <regex>
 
-bool doesPhoneNumExist(string phoneNum, string fileName)
+bool doesPhoneNumOrNicExist(string str, bool isItPhoneNum, string fileName)
 {
-    ifstream file_in("passengers.txt");
+    ifstream file_in(fileName);
     istringstream ss;
-    bool phoneNumExists = false;
+    bool phoneNumOrNicExists = false;
 
     if (file_in)
     {
-        string line;
-        string skipString, phoneNumString;
+        string line, thisStr;
+
+        int skip = isItPhoneNum ? 6 : 8;
+
         while (getline(file_in, line))
         {
             ss.clear();
             ss.str(line);
 
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < skip; i++)
             {
-                getline(ss, skipString, ',');
+                getline(ss, thisStr, ',');
             }
 
-            getline(ss, phoneNumString, ',');
+            getline(ss, thisStr, ',');
 
-            if (phoneNumString == phoneNum)
+            if (thisStr == str)
             {
-                phoneNumExists = true;
+                phoneNumOrNicExists = true;
                 break;
             }
         }
     }
 
     file_in.close();
-    return phoneNumExists;
+    return phoneNumOrNicExists;
 }
 
 bool countOccurrences(string str, char ch)
@@ -61,9 +63,11 @@ bool isValidName(string name)
     if (!valid)
         return valid;
 
-    for (int i = 0; i < name.length(); i++) {
+    for (int i = 0; i < name.length(); i++)
+    {
         // includes comma check
-        if (!isalnum(name[i])) {
+        if (!isalnum(name[i]))
+        {
             valid = false;
             return valid;
         }
@@ -101,11 +105,12 @@ bool isPhoneNumValid(string phoneNum)
 bool isValidNIC(string nic)
 {
     bool valid = nic.length() == 13;
-    
+
     if (!valid)
         return valid;
-    
-    if (nic[0] != '4') {
+
+    if (nic[0] != '4')
+    {
         valid = false;
         return valid;
     }
@@ -120,12 +125,38 @@ bool isValidNIC(string nic)
         }
     }
 
-    return valid; 
+    return valid;
 }
 
-bool isValidPlateNum(string plateNum) {
+bool isValidPlateNum(string plateNum)
+{
     // AA-111
     // AAA-1111
     regex plateNumRegex("[A-Z]{2,3}-[0-9]{3,4}");
     return regex_match(plateNum, plateNumRegex);
+}
+
+int getLastId(string fileName)
+{
+    ifstream file_in(fileName);
+    istringstream ss;
+
+    string returnId = "0";
+
+    if (file_in)
+    {
+        string line, thisIdStr;
+
+        while (getline(file_in, line))
+        {
+            ss.clear();
+            ss.str(line);
+
+            getline(ss, thisIdStr, ',');
+            returnId = thisIdStr;
+        }
+    }
+
+    file_in.close();
+    return stoi(returnId);
 }

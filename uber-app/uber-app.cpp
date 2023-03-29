@@ -10,6 +10,12 @@ int main()
 		 << "Welcome to Uber Application!" << endl;
 	int opt1, opt2;
 
+	time_t now = time(0);
+	tm *timePtr = localtime(&now);
+	// const int current_date = timePtr->tm_mday;
+	const int current_month = 1 + timePtr->tm_mon;
+	const int current_year = 1900 + timePtr->tm_year;
+
 start:
 	opt1 = menu1();
 	if (opt1 == 3)
@@ -43,6 +49,7 @@ start:
 					 << "Error: both names must contain at least 1 and at most 30 characters" << endl;
 		} while (is_err);
 
+		int age;
 		do
 		{
 			cout << endl
@@ -56,15 +63,24 @@ start:
 				 << "Enter year of your birth: ";
 			cin >> year;
 
-			is_err = day < 1 || day > 31 || month < 1 || month > 12 || year > 2023 || year < 1920;
+			is_err = day < 1 || day > 31 || month < 1 || month > 12 || year > current_year || year < current_year - 120;
 
 			if (is_err)
 				cerr << endl
 					 << "Error: invalid date of birth" << endl;
 
-			// TODO: make 2023 and 1920 into a variable
-			// TODO: check if driver is of at least 18 years old
-		} while (is_err);
+			if (!is_err && opt2 == 2)
+			{
+				int years_diff = current_year - year;
+				int months_diff = current_month - month;
+				// int days_diff = current_date - day;
+
+				age = years_diff + (months_diff < 0 ? -1 : 0);
+				if (age < 18)
+					cerr << endl
+						 << "Error: driver must be at least 18 years old" << endl;
+			}
+		} while (is_err || (age < 18 && opt2 == 2));
 
 		bool phoneNumExists = false;
 		do
@@ -81,10 +97,10 @@ start:
 			else
 			{
 				if (opt2 == 1)
-					phoneNumExists = doesPhoneNumExist(phoneNum, "passengers.txt");
+					phoneNumExists = doesPhoneNumOrNicExist(phoneNum, true, "passengers.txt");
 
 				else if (opt2 == 2)
-					phoneNumExists = doesPhoneNumExist(phoneNum, "drivers.txt");
+					phoneNumExists = doesPhoneNumOrNicExist(phoneNum, true, "drivers.txt");
 			}
 
 			if (phoneNumExists)
@@ -94,6 +110,9 @@ start:
 		} while (is_err || phoneNumExists);
 
 		if (opt2 == 2)
+		{
+			bool nicExists;
+
 			do
 			{
 				cout << endl
@@ -105,8 +124,13 @@ start:
 				if (is_err)
 					cerr << endl
 						 << "Error: invalid NIC" << endl;
-			} while (is_err);
-		// TODO: check if NIC is already used 
+
+				nicExists = doesPhoneNumOrNicExist(nic, false, "drivers.txt");
+				if (nicExists)
+					cerr << endl
+						 << "Error: this NIC is already in use" << endl;
+			} while (is_err || nicExists);
+		}
 
 		do
 		{
@@ -136,12 +160,13 @@ start:
 
 			type = typesMenu();
 
+			int minYearOfManufacture = current_year - 17;
 			do
 			{
 				cout << endl
-					 << "Enter year of manufacture of your vehicle [2006 - 2023]: ";
+					 << "Enter year of manufacture of your vehicle [" << minYearOfManufacture << " - " << current_year << "]: ";
 				cin >> yearOfManufacture;
-			} while (yearOfManufacture < 2006 || yearOfManufacture > 2023); // TODO: make 2023 into a variable & keep incrementing 2006
+			} while (yearOfManufacture < minYearOfManufacture || yearOfManufacture > current_year);
 
 			do
 			{
@@ -182,16 +207,16 @@ start:
 				cin >> color;
 			} while (!isValidName(color));
 
-			// TODO: keep check of id and change 0 to id in next line
 			Vehicle vehicle(type, yearOfManufacture, make, model, trimLevel, plateNum, color);
 
-			Driver driver(0, day, month, year, firstName, lastName, phoneNum, password, nic, vehicle);
+			int newId = getLastId("drivers.txt") + 1;
+			Driver driver(newId, day, month, year, firstName, lastName, phoneNum, password, nic, vehicle);
 			driver.appendToFile();
 		}
 		else
 		{ // passenger
-			// TODO: keep check of id and change 0 to id in next line
-			Passenger passenger(0, day, month, year, firstName, lastName, phoneNum, password);
+			int newId = getLastId("passengers.txt") + 1;
+			Passenger passenger(newId, day, month, year, firstName, lastName, phoneNum, password);
 			passenger.appendToFile();
 		}
 
@@ -279,7 +304,7 @@ start:
 			string typeStr, yearOfManufactureStr, modelStr, makeStr, trimLevelStr, plateNumStr, colorStr;
 			string nicStr;
 			string line;
-			
+
 			if (drivers_in)
 			{
 				istringstream ss;
