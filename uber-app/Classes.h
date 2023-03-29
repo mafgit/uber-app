@@ -99,7 +99,6 @@ public:
 
     void appendToFile()
     {
-        // FIXME: phone number not getting saved in file, neither is its value correct in uber-app.cpp over driver.appendToFile()
         ofstream file("drivers.txt", ios::app);
         file << id << "," << day << "," << month << "," << year << "," << firstName << "," << lastName << ","
              << phoneNum << "," << password << "," << nic << "," << vehicle.getType() << "," << vehicle.getModel() << "," << vehicle.getName() << "," << vehicle.getPlateNum()

@@ -10,13 +10,15 @@ int main()
 		 << "Welcome to Uber Application!" << endl;
 	int opt1, opt2;
 
-	do
-	{
-		opt1 = menu1();
-		if (opt1 == 3)
-			return 0; // exit
-		opt2 = menu2();
-	} while (opt2 == 3);
+start:
+
+	opt1 = menu1();
+	if (opt1 == 3)
+		return 0;
+
+	opt2 = menu2();
+	if (opt2 == 3)
+		goto start;
 
 	string firstName, lastName, phoneNum, password, confirmPassword;
 	int day, month, year;
@@ -65,12 +67,9 @@ int main()
 			// TODO: check if driver is of at least 18 years old
 		} while (is_err);
 
-		bool phoneNumExists;
-
+		bool phoneNumExists = false;
 		do
 		{
-			phoneNumExists = false;
-
 			cout << endl
 				 << "Enter phone number (start with 0): ";
 			cin >> phoneNum;
@@ -86,19 +85,16 @@ int main()
 					phoneNumExists = doesPhoneNumExist(phoneNum, "passengers.txt");
 
 				else if (opt2 == 2)
-					phoneNum = doesPhoneNumExist(phoneNum, "drivers.txt");
+					phoneNumExists = doesPhoneNumExist(phoneNum, "drivers.txt");
 			}
 
 			if (phoneNumExists)
-			{
 				cerr << endl
 					 << "Error: this phone number is already in use" << endl;
-			}
 
 		} while (is_err || phoneNumExists);
 
 		if (opt2 == 2)
-		{
 			do
 			{
 				cout << endl
@@ -111,7 +107,6 @@ int main()
 					cerr << endl
 						 << "Error: invalid NIC" << endl;
 			} while (is_err);
-		}
 
 		do
 		{
@@ -137,6 +132,8 @@ int main()
 		{ // driver
 			int model;
 			string plateNum, color, type, name;
+
+			type = typesMenu();
 
 			do
 			{
@@ -169,8 +166,6 @@ int main()
 				cin >> plateNum;
 			} while (!isValidPlateNum(plateNum));
 
-			type = typesMenu();
-
 			// TODO: keep check of id and change 0 to id in next line
 			Vehicle vehicle(type, model, name, plateNum, color);
 
@@ -186,6 +181,7 @@ int main()
 
 		// signed up
 		// TODO: show main menu again
+		goto start;
 	}
 	else
 	{ // opt1 = 2 (login)
@@ -246,9 +242,7 @@ int main()
 				system("cls");
 				cerr << endl
 					 << "Error: invalid credentials" << endl;
-				// show first menu again
-				//	main();
-				// TODO: think of a more efficient way of going back to start of main
+				goto start;
 			}
 			else
 			{
@@ -273,14 +267,6 @@ int main()
 				istringstream ss;
 				while (!found && getline(drivers_in, line))
 				{
-					/*
-						found	getline	run while loop
-						0		0		0
-						0		1		1
-						1		0		0
-						1		1		0
-					*/
-
 					ss.clear();
 					ss.str(line);
 
@@ -314,9 +300,7 @@ int main()
 				system("cls");
 				cerr << endl
 					 << "Error: invalid credentials" << endl;
-				// show first menu again
-				// main();
-				// TODO: think of a more efficient way of going back to start of main
+				goto start;
 			}
 			else
 			{
