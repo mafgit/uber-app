@@ -39,8 +39,6 @@ string typesMenu()
 {
     int opt = 0;
 
-    cout << endl
-         << "Enter a number to select the type of your vehicle: " << endl;
     do
     {
         cout << endl

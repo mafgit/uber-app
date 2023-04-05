@@ -2,10 +2,13 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include "Menus.h"
+#include <windows.h>
 using namespace std;
 
 // TODO: admin class
 
+const int MAX_TRIES = 2; // TODO: change value
 class User
 {
 protected:
@@ -17,9 +20,41 @@ public:
 
     User(int id, int day, int month, int year, string firstName, string lastName, string phoneNum, string password) : id(id), day(day), month(month), year(year), firstName(firstName), lastName(lastName), phoneNum(phoneNum), password(password) {}
 
-    void viewProfile()
+    virtual void viewProfile()
     {
-        // TODO: view profile
+        cout << endl
+             << "ID: " << id << endl;
+        cout << "Name: " << firstName << " " << lastName << endl;
+        cout << "Date of Birth (D/M/Y): " << day << "/" << month << "/" << year << endl;
+        cout << "Phone Number: " << phoneNum << endl;
+    }
+};
+
+class Passenger;
+class Driver;
+
+class Booking
+{
+    char pickupLocation = '-', dropoffLocation = '-';
+    int fare = 0; // TODO: check if fare should be taken in float
+    Passenger *passenger;
+    Driver *driver;
+    // TODO: bookedAt (time of booking)
+    // TODO: completedAt
+    string status = "searching"; // searching, arriving, arrived, in progress, completed, cancelled
+
+public:
+    Booking(char pickupLocation, char dropoffLocation, Passenger *passenger)
+    {
+        this->pickupLocation = pickupLocation;
+        this->dropoffLocation = dropoffLocation;
+        this->passenger = passenger;
+        // TODO: set time, fare and driver;
+    }
+
+    void appendToFile()
+    {
+        // TODO: make appendToFile
     }
 };
 
@@ -55,7 +90,79 @@ public:
             cin >> opt;
         } while (opt > 5 || opt < 1);
 
+        if (opt == 1)
+            bookARide();
+        if (opt == 3)
+            viewProfile();
+
         return opt;
+    }
+
+    void viewProfile() override
+    {
+        this->User::viewProfile();
+        // TODO: more data?
+        // TODO: show menu again
+    }
+
+    void bookARide()
+    {
+        char pickup, dropoff;
+
+        do
+        {
+            cout << endl
+                 << "Enter pickup location (enter any location from A to Z): ";
+            cin >> pickup;
+
+            cout << "Enter dropoff location (make sure not to use the same location as pickup): ";
+            cin >> dropoff;
+        } while (pickup < 'A' || pickup > 'Z' || dropoff < 'A' || dropoff > 'Z' || pickup == dropoff);
+
+        cout << endl
+             << "Enter a number to select the type of vehicle that you want to book: " << endl;
+        string type = typesMenu();
+
+        // TODO: appendToFile for booking
+        Booking booking(pickup, dropoff, this);
+        booking.appendToFile();
+
+        // wait for X seconds OR until a driver accepts a ride
+        int tries = 0;
+        bool found = false;
+
+        cout << endl
+             << "Checking every five seconds if any driver accepted the ride...";
+
+        while (tries < MAX_TRIES && !found)
+        {
+            cout << endl
+                 << "Wait... ";
+            for (int i = 1; i <= 5; i++)
+            {
+                cout << i << " ";
+                Sleep(1000);
+            }
+
+            // TODO: found = checkRideFound(booking);
+
+            if (!found)
+                tries++;
+            else
+                found = true;
+        }
+
+        if (found)
+        {
+            // TODO:
+        }
+        else
+        {
+            cout << endl
+                 << "Your ride was not accepted by any driver" << endl;
+        }
+
+        // TODO: show menu again
     }
 };
 
@@ -86,6 +193,16 @@ public:
     string getColor() { return color; }
     string getType() { return type; }
     int getYearOfManufacturer() { return yearOfManufacture; }
+
+    void viewData()
+    {
+        cout << endl
+             << "Vehicle Data: " << endl;
+        cout << "Name: " << yearOfManufacture << " " << make << " " << model << " " << trimLevel << endl;
+        cout << "Type: " << type << endl;
+        cout << "Color: " << color << endl;
+        cout << "Plate Number " << plateNum;
+    }
 };
 
 class Driver : public User
@@ -105,7 +222,7 @@ public:
         ofstream file("drivers.txt", ios::app);
         file << id << "," << day << "," << month << "," << year << "," << firstName << "," << lastName << ","
              << phoneNum << "," << password << "," << nic << "," << vehicle.getType() << "," << vehicle.getYearOfManufacturer() << "," << vehicle.getMake() << "," << vehicle.getModel() << "," << vehicle.getTrimLevel() << "," << vehicle.getPlateNum() << "," << vehicle.getColor() << "," << sumOfRatings << "," << ratedBy << "\n";
-
+        // TODO: check if friend function can be implemented
         file.close();
     }
 
@@ -125,17 +242,20 @@ public:
             cin >> opt;
         } while (opt > 5 || opt < 1);
 
+        if (opt == 3)
+            viewProfile();
+
         return opt;
     }
-};
 
-class Booking
-{
-    char pickupLocation, dropoffLocation;
-    int fare; // TODO: check if fare should be taken in float
-    Passenger passenger;
-    Driver driver;
-    // TODO: bookedAt (time of booking)
-    // TODO: completedAt
-    string status; // arriving, arrived, in_progress, completed, cancelled
+    void viewProfile() override
+    {
+        this->User::viewProfile();
+        cout << "NIC: " << nic << endl;
+        cout << "Average Rating: " << (ratedBy == 0 ? 0 : sumOfRatings / ratedBy) << endl;
+        cout << "Rated by: " << ratedBy << " passengers" << endl;
+        vehicle.viewData();
+        // TODO: more data?
+        // TODO: show menu again
+    }
 };

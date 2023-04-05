@@ -158,6 +158,8 @@ start:
 			string type, make, model, trimLevel, plateNum, color;
 			int yearOfManufacture;
 
+			cout << endl
+				 << "Enter a number to select the type of your vehicle: " << endl;
 			type = typesMenu();
 
 			int minYearOfManufacture = current_year - 17;
