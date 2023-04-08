@@ -28,7 +28,7 @@ int menu2()
         cout << endl
              << "1) As passenger" << endl;
         cout << "2) As driver" << endl;
-        cout << "3) Go Back" << endl;
+        cout << "3) Go back" << endl;
         cin >> opt;
     } while (opt != 1 && opt != 2 && opt != 3);
 

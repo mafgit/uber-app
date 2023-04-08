@@ -296,7 +296,27 @@ start:
 				cout << endl
 					 << "Logged in as passenger" << endl;
 				Passenger passenger(stoi(idStr), stoi(dayStr), stoi(monthStr), stoi(yearStr), firstNameStr, lastNameStr, phoneNumStr, passwordStr);
+
+			passengerMenu:
 				int opt = passenger.displayMenu();
+
+				if (opt == 1)
+					passenger.bookARide();
+				else if (opt == 3)
+					passenger.viewProfile();
+
+				if (opt != 5)
+				{
+					goto passengerMenu;
+				}
+				else
+				{
+
+					system("cls");
+					cout << endl
+						 << "Logged out!" << endl;
+					goto start;
+				}
 			}
 		}
 		else if (opt2 == 2)
@@ -358,7 +378,24 @@ start:
 
 				Vehicle vehicle(typeStr, stoi(yearOfManufactureStr), modelStr, makeStr, trimLevelStr, plateNumStr, colorStr);
 				Driver driver(stoi(idStr), stoi(dayStr), stoi(monthStr), stoi(yearStr), firstNameStr, lastNameStr, phoneNumStr, passwordStr, nicStr, vehicle);
+
+			driverMenu:
 				int opt = driver.displayMenu();
+
+				if (opt == 3)
+					driver.viewProfile();
+
+				if (opt != 5)
+				{
+					goto driverMenu;
+				}
+				else
+				{
+					system("cls");
+					cout << endl
+						 << "Logged out!" << endl;
+					goto start;
+				}
 			}
 		}
 	}

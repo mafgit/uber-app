@@ -22,6 +22,7 @@ public:
 
     virtual void viewProfile()
     {
+        system("cls");
         cout << endl
              << "ID: " << id << endl;
         cout << "Name: " << firstName << " " << lastName << endl;
@@ -75,7 +76,6 @@ public:
 
     int displayMenu()
     {
-        // could've been done using inheritance but didn't do that coz it would be difficult if we need to add more options in either passenger or driver
         int opt = 0;
 
         do
@@ -90,10 +90,10 @@ public:
             cin >> opt;
         } while (opt > 5 || opt < 1);
 
-        if (opt == 1)
-            bookARide();
-        if (opt == 3)
-            viewProfile();
+        // if (opt == 1)
+        //     bookARide();
+        // if (opt == 3)
+        //     viewProfile();
 
         return opt;
     }
@@ -107,6 +107,7 @@ public:
 
     void bookARide()
     {
+        system("cls");
         char pickup, dropoff;
 
         do
@@ -201,7 +202,7 @@ public:
         cout << "Name: " << yearOfManufacture << " " << make << " " << model << " " << trimLevel << endl;
         cout << "Type: " << type << endl;
         cout << "Color: " << color << endl;
-        cout << "Plate Number " << plateNum;
+        cout << "Plate Number: " << plateNum << endl;
     }
 };
 
@@ -242,8 +243,8 @@ public:
             cin >> opt;
         } while (opt > 5 || opt < 1);
 
-        if (opt == 3)
-            viewProfile();
+        // if (opt == 3)
+        //     viewProfile();
 
         return opt;
     }
