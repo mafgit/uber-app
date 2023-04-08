@@ -1,11 +1,10 @@
 #include "Classes.h"
-#include "Validations.h"
-#include "Menus.h"
+#include "Functions.h"
 #include <string>
 
 int main()
 {
-	// TODO: any string input must not have a comma
+	// LATER: any string input must not have a comma
 	cout << endl
 		 << "Welcome to Uber Application!" << endl;
 	int opt1, opt2;
@@ -54,7 +53,7 @@ start:
 		{
 			cout << endl
 				 << "Enter date of your birth [1 to 31]: ";
-			// TODO: check for no of days being correct for a particular month can be implemented
+			// LATER: check for no of days being correct for a particular month can be implemented
 			cin >> day;
 			cout << endl
 				 << "Enter month of your birth [1 to 12]: ";
@@ -242,7 +241,7 @@ start:
 		bool found = 0;
 		if (opt2 == 1)
 		{
-			// TODO: try to remove code duplication in login
+			// LATER: try to remove code duplication in login
 			ifstream passengers_in("passengers.txt");
 			string idStr, dayStr, monthStr, yearStr, firstNameStr, lastNameStr, phoneNumStr, passwordStr;
 			string line;
@@ -382,7 +381,17 @@ start:
 			driverMenu:
 				int opt = driver.displayMenu();
 
-				if (opt == 3)
+				if (opt == 1)
+				{
+					// TODO: try to move this code into Classes.h
+					// TODO: keep repeating until acceptedId changes from -1 or driver enters a command to cancel
+					int acceptedId = -1;
+					while (acceptedId == -1)
+					{
+						acceptedId = driver.viewAvailableRides();
+					}
+				}
+				else if (opt == 3)
 					driver.viewProfile();
 
 				if (opt != 5)

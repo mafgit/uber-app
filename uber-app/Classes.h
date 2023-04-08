@@ -2,13 +2,15 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "Menus.h"
 #include <windows.h>
+#include "Functions.h"
 using namespace std;
 
-// TODO: admin class
+// LATER: admin class
 
-const int MAX_TRIES = 2; // TODO: change value
+const int MAX_TRIES = 12; // LATER: change value
+// const int MAX_BOOKINGS_TO_DISPLAY = 10;
+
 class User
 {
 protected:
@@ -29,6 +31,8 @@ public:
         cout << "Date of Birth (D/M/Y): " << day << "/" << month << "/" << year << endl;
         cout << "Phone Number: " << phoneNum << endl;
     }
+
+    int getId() { return id; }
 };
 
 class Passenger;
@@ -36,26 +40,50 @@ class Driver;
 
 class Booking
 {
+    int id = -1;
+    string status = "available"; // available, not accepted, arriving, arrived, in progress, completed, cancelled
     char pickupLocation = '-', dropoffLocation = '-';
-    int fare = 0; // TODO: check if fare should be taken in float
+    string type = "";
+    int fare = 0; // LATER: check if fare should be taken in float
     Passenger *passenger;
+    int passengerId;
     Driver *driver;
-    // TODO: bookedAt (time of booking)
-    // TODO: completedAt
-    string status = "searching"; // searching, arriving, arrived, in progress, completed, cancelled
+    int driverId;
+    string bookedAt = "-";
+    string completedAt = "-";
+
+    const int fare_per_km = 25;
 
 public:
-    Booking(char pickupLocation, char dropoffLocation, Passenger *passenger)
+    Booking() {}
+
+    Booking(int id, char pickupLocation, char dropoffLocation, string type, Passenger *passenger);
+
+    // constructor for loading an already stored booking
+    void loadBooking(int id, string status, char pickupLocation, char dropoffLocation, string type, int fare, int passengerId, string bookedAtStr, int driverId, string completedAt)
     {
+        this->id = id;
+        this->status = status;
         this->pickupLocation = pickupLocation;
         this->dropoffLocation = dropoffLocation;
-        this->passenger = passenger;
-        // TODO: set time, fare and driver;
+        this->type = type;
+        this->fare = fare;
+        this->passengerId = passengerId;
+        this->bookedAt = bookedAt;
+        this->driverId = driverId;
+        this->completedAt = completedAt;
     }
 
-    void appendToFile()
+    void updateStatus(string newStatus)
     {
-        // TODO: make appendToFile
+        // TODO: update booking status
+    }
+
+    void appendToFile();
+
+    void completeRide()
+    {
+        completedAt = getCurrentTime();
     }
 };
 
@@ -86,7 +114,7 @@ public:
             cout << "3) View profile" << endl;
             cout << "4) Update profile" << endl;
             cout << "5) Logout" << endl;
-            // TODO: 6) Delete account
+            // LATER: 6) Delete account
             cin >> opt;
         } while (opt > 5 || opt < 1);
 
@@ -102,7 +130,6 @@ public:
     {
         this->User::viewProfile();
         // TODO: more data?
-        // TODO: show menu again
     }
 
     void bookARide()
@@ -124,8 +151,8 @@ public:
              << "Enter a number to select the type of vehicle that you want to book: " << endl;
         string type = typesMenu();
 
-        // TODO: appendToFile for booking
-        Booking booking(pickup, dropoff, this);
+        int newId = getLastId("bookings.txt") + 1;
+        Booking booking(newId, pickup, dropoff, type, this);
         booking.appendToFile();
 
         // wait for X seconds OR until a driver accepts a ride
@@ -135,6 +162,7 @@ public:
         cout << endl
              << "Checking every five seconds if any driver accepted the ride...";
 
+        // TODO: check if user cancels the search; in that case update status to unavailable
         while (tries < MAX_TRIES && !found)
         {
             cout << endl
@@ -155,15 +183,16 @@ public:
 
         if (found)
         {
-            // TODO:
+            // TODO: code if ride found
         }
         else
         {
+            booking.updateStatus("not accepted");
             cout << endl
-                 << "Your ride was not accepted by any driver" << endl;
+                 << endl
+                 << "Your ride was not accepted by any driver" << endl
+                 << "Please try again later" << endl;
         }
-
-        // TODO: show menu again
     }
 };
 
@@ -223,7 +252,7 @@ public:
         ofstream file("drivers.txt", ios::app);
         file << id << "," << day << "," << month << "," << year << "," << firstName << "," << lastName << ","
              << phoneNum << "," << password << "," << nic << "," << vehicle.getType() << "," << vehicle.getYearOfManufacturer() << "," << vehicle.getMake() << "," << vehicle.getModel() << "," << vehicle.getTrimLevel() << "," << vehicle.getPlateNum() << "," << vehicle.getColor() << "," << sumOfRatings << "," << ratedBy << "\n";
-        // TODO: check if friend function can be implemented
+        // LATER: check if friend function can be implemented
         file.close();
     }
 
@@ -234,12 +263,12 @@ public:
         do
         {
             cout << endl
-                 << "1) View users currently searching for ride" << endl;
+                 << "1) View available rides" << endl;
             cout << "2) View history" << endl;
             cout << "3) View profile" << endl;
             cout << "4) Update profile" << endl;
             cout << "5) Logout" << endl;
-            // TODO: 6) Delete account
+            // LATER: 6) Delete account
             cin >> opt;
         } while (opt > 5 || opt < 1);
 
@@ -256,7 +285,87 @@ public:
         cout << "Average Rating: " << (ratedBy == 0 ? 0 : sumOfRatings / ratedBy) << endl;
         cout << "Rated by: " << ratedBy << " passengers" << endl;
         vehicle.viewData();
-        // TODO: more data?
-        // TODO: show menu again
+        // LATER: more data?
+    }
+
+    int viewAvailableRides()
+    {
+        system("cls");
+
+        ifstream file("bookings.txt");
+        istringstream ss;
+        string line;
+
+        string idStr, statusStr, pickupStr, dropoffStr, typeStr, fareStr, passengerIdStr, driverIdStr, bookedAtStr, completedAtStr;
+        Booking booking;
+        int acceptedId;
+
+        if (file)
+        {
+            while (getline(file, line))
+            {
+                ss.clear();
+                ss.str(line);
+
+                getline(ss, idStr, ',');
+                getline(ss, statusStr, ',');
+                getline(ss, pickupStr, ',');
+                getline(ss, dropoffStr, ',');
+                getline(ss, typeStr, ',');
+                getline(ss, fareStr, ',');
+                getline(ss, passengerIdStr, ',');
+                getline(ss, bookedAtStr, ',');
+                getline(ss, driverIdStr, ',');
+                getline(ss, completedAtStr, ',');
+
+                if (statusStr == "available" && (this->vehicle).getType() == typeStr)
+                {
+                    booking.loadBooking(stoi(idStr), statusStr, pickupStr[0], dropoffStr[0], typeStr, stoi(fareStr), stoi(passengerIdStr), bookedAtStr, stoi(driverIdStr), completedAtStr);
+
+                    cout << endl
+                         << "Booking ID: " << idStr;
+                    cout << endl
+                         << "Pickup Location: " << pickupStr;
+                    cout << endl
+                         << "Dropoff Location: " << dropoffStr;
+                    cout << endl
+                         << "Average Distance: " << abs(dropoffStr[0] - pickupStr[0]);
+                    cout << endl
+                         << "Vehicle Type: " << typeStr;
+                    cout << endl
+                         << "Booked at: " << bookedAtStr;
+                }
+            }
+
+            cout << endl
+                 << "Enter a booking ID to accept it: ";
+            cin >> acceptedId;
+
+            // TODO: check if acceptedId is available
+        }
+
+        return acceptedId;
     }
 };
+
+Booking::Booking(int id, char pickupLocation, char dropoffLocation, string type, Passenger *passenger)
+{
+    this->id = id;
+    this->pickupLocation = pickupLocation;
+    this->dropoffLocation = dropoffLocation;
+    this->type = type;
+    this->passenger = passenger;
+    this->passengerId = passenger->getId();
+    this->fare = fare_per_km * abs(dropoffLocation - pickupLocation); // TODO: also use type of vehicle to calculate cost
+    bookedAt = getCurrentTime();
+
+    // TODO: set driver
+}
+
+void Booking::appendToFile()
+{
+    ofstream file("bookings.txt", ios::app);
+    file << id << "," << status << "," << pickupLocation << "," << dropoffLocation << "," << type << ","
+         << fare << "," << passengerId << "," << bookedAt << "," << driverId << "," << completedAt << "\n";
+    file.close();
+}
