@@ -1,6 +1,7 @@
 #pragma once
 #include "Classes.h"
 #include <regex>
+#include <sstream>
 using namespace std;
 
 bool doesPhoneNumOrNicExist(string str, bool isItPhoneNum, string fileName)
@@ -229,4 +230,15 @@ string getCurrentTime()
     string time = ctime(&current_time);
     time[time.length() - 1] = ' '; // LATER: check '\0'
     return time;
+}
+
+istringstream ss;
+
+void getFields(string line, string *fields[20], int num_fields)
+{
+    ss.clear();
+    ss.str(line);
+
+    for (int i = 0; i < num_fields; i++)
+        getline(ss, *(fields[i]), ',');
 }

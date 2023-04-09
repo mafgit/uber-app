@@ -241,14 +241,12 @@ start:
 		bool found = 0;
 		if (opt2 == 1)
 		{
-			// LATER: try to remove code duplication in login
 			ifstream passengers_in("passengers.txt");
 			string idStr, dayStr, monthStr, yearStr, firstNameStr, lastNameStr, phoneNumStr, passwordStr;
 			string line;
 
 			if (passengers_in)
 			{
-				istringstream ss;
 				while (!found && getline(passengers_in, line))
 				{
 					/*
@@ -259,17 +257,8 @@ start:
 						1		1		0
 					*/
 
-					ss.clear();
-					ss.str(line);
-
-					getline(ss, idStr, ',');
-					getline(ss, dayStr, ',');
-					getline(ss, monthStr, ',');
-					getline(ss, yearStr, ',');
-					getline(ss, firstNameStr, ',');
-					getline(ss, lastNameStr, ',');
-					getline(ss, phoneNumStr, ',');
-					getline(ss, passwordStr, ',');
+					string *fields[8] = {&idStr, &dayStr, &monthStr, &yearStr, &firstNameStr, &lastNameStr, &phoneNumStr, &passwordStr};
+					getFields(line, fields, 8);
 
 					if (phoneNum == phoneNumStr && password == passwordStr)
 					{
@@ -328,28 +317,10 @@ start:
 
 			if (drivers_in)
 			{
-				istringstream ss;
 				while (!found && getline(drivers_in, line))
 				{
-					ss.clear();
-					ss.str(line);
-
-					getline(ss, idStr, ',');
-					getline(ss, dayStr, ',');
-					getline(ss, monthStr, ',');
-					getline(ss, yearStr, ',');
-					getline(ss, firstNameStr, ',');
-					getline(ss, lastNameStr, ',');
-					getline(ss, phoneNumStr, ',');
-					getline(ss, passwordStr, ',');
-					getline(ss, nicStr, ',');
-					getline(ss, typeStr, ',');
-					getline(ss, yearOfManufactureStr, ',');
-					getline(ss, makeStr, ',');
-					getline(ss, modelStr, ',');
-					getline(ss, trimLevelStr, ',');
-					getline(ss, plateNumStr, ',');
-					getline(ss, colorStr, ',');
+					string *fields[16] = {&idStr, &dayStr, &monthStr, &yearStr, &firstNameStr, &lastNameStr, &phoneNumStr, &passwordStr, &nicStr, &typeStr, &yearOfManufactureStr, &makeStr, &modelStr, &trimLevelStr, &plateNumStr, &colorStr};
+					getFields(line, fields, 16);
 
 					if (phoneNum == phoneNumStr && password == passwordStr)
 					{

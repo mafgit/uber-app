@@ -1,7 +1,6 @@
 #pragma once
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <windows.h>
 #include "Functions.h"
 using namespace std;
@@ -293,7 +292,6 @@ public:
         system("cls");
 
         ifstream file("bookings.txt");
-        istringstream ss;
         string line;
 
         string idStr, statusStr, pickupStr, dropoffStr, typeStr, fareStr, passengerIdStr, driverIdStr, bookedAtStr, completedAtStr;
@@ -304,19 +302,8 @@ public:
         {
             while (getline(file, line))
             {
-                ss.clear();
-                ss.str(line);
-
-                getline(ss, idStr, ',');
-                getline(ss, statusStr, ',');
-                getline(ss, pickupStr, ',');
-                getline(ss, dropoffStr, ',');
-                getline(ss, typeStr, ',');
-                getline(ss, fareStr, ',');
-                getline(ss, passengerIdStr, ',');
-                getline(ss, bookedAtStr, ',');
-                getline(ss, driverIdStr, ',');
-                getline(ss, completedAtStr, ',');
+                string *fields[10] = {&idStr, &statusStr, &pickupStr, &dropoffStr, &typeStr, &fareStr, &passengerIdStr, &bookedAtStr, &driverIdStr, &completedAtStr};
+                getFields(line, fields, 10);
 
                 if (statusStr == "available" && (this->vehicle).getType() == typeStr)
                 {
