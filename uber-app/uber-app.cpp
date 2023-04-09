@@ -1,5 +1,6 @@
 #include "Classes.h"
 #include "Functions.h"
+#include "Questions.h"
 #include <string>
 
 int main()
@@ -8,12 +9,6 @@ int main()
 	cout << endl
 		 << "Welcome to Uber Application!" << endl;
 	int opt1, opt2;
-
-	time_t now = time(0);
-	tm *timePtr = localtime(&now);
-	// const int current_date = timePtr->tm_mday;
-	const int current_month = 1 + timePtr->tm_mon;
-	const int current_year = 1900 + timePtr->tm_year;
 
 start:
 	opt1 = menu1();
@@ -24,132 +19,21 @@ start:
 	if (opt2 == 3)
 		goto start;
 
-	string firstName, lastName, phoneNum, password, confirmPassword;
+	string firstName, lastName, phoneNum, password;
 	int day, month, year;
 	string nic;
 
 	bool is_err;
 	if (opt1 == 1)
 	{
-		do
-		{
-			cout << endl
-				 << "Enter first name: ";
-			cin >> firstName;
-
-			cout << endl
-				 << "Enter last name: ";
-			cin >> lastName;
-
-			is_err = !isValidName(firstName) || !isValidName(lastName);
-
-			if (is_err)
-				cerr << endl
-					 << "Error: both names must contain at least 1 and at most 30 characters" << endl;
-		} while (is_err);
-
-		int age;
-		do
-		{
-			cout << endl
-				 << "Enter date of your birth [1 to 31]: ";
-			// LATER: check for no of days being correct for a particular month can be implemented
-			cin >> day;
-			cout << endl
-				 << "Enter month of your birth [1 to 12]: ";
-			cin >> month;
-			cout << endl
-				 << "Enter year of your birth: ";
-			cin >> year;
-
-			is_err = day < 1 || day > 31 || month < 1 || month > 12 || year > current_year || year < current_year - 120;
-
-			if (is_err)
-				cerr << endl
-					 << "Error: invalid date of birth" << endl;
-
-			if (!is_err && opt2 == 2)
-			{
-				int years_diff = current_year - year;
-				int months_diff = current_month - month;
-				// int days_diff = current_date - day;
-
-				age = years_diff + (months_diff < 0 ? -1 : 0);
-				if (age < 18)
-					cerr << endl
-						 << "Error: driver must be at least 18 years old" << endl;
-			}
-		} while (is_err || (age < 18 && opt2 == 2));
-
-		bool phoneNumExists = false;
-		do
-		{
-			cout << endl
-				 << "Enter phone number (start with 0): ";
-			cin >> phoneNum;
-
-			is_err = !isPhoneNumValid(phoneNum);
-
-			if (is_err)
-				cerr << endl
-					 << "Error: invalid phone number" << endl;
-			else
-			{
-				if (opt2 == 1)
-					phoneNumExists = doesPhoneNumOrNicExist(phoneNum, true, "passengers.txt");
-
-				else if (opt2 == 2)
-					phoneNumExists = doesPhoneNumOrNicExist(phoneNum, true, "drivers.txt");
-			}
-
-			if (phoneNumExists)
-				cerr << endl
-					 << "Error: this phone number is already in use" << endl;
-
-		} while (is_err || phoneNumExists);
+		askFirstAndLastNames(&firstName, &lastName);
+		askDOB(&day, &month, &year, opt2);
+		askPhoneNum(&phoneNum, opt2);
 
 		if (opt2 == 2)
-		{
-			bool nicExists;
+			askNIC(&nic);
 
-			do
-			{
-				cout << endl
-					 << "Enter NIC number (without dashes): ";
-				cin >> nic;
-
-				is_err = !isValidNIC(nic);
-
-				if (is_err)
-					cerr << endl
-						 << "Error: invalid NIC" << endl;
-
-				nicExists = doesPhoneNumOrNicExist(nic, false, "drivers.txt");
-				if (nicExists)
-					cerr << endl
-						 << "Error: this NIC is already in use" << endl;
-			} while (is_err || nicExists);
-		}
-
-		do
-		{
-			cout << endl
-				 << "Enter password: ";
-			cin >> password;
-
-			cout << endl
-				 << "Confirm password: ";
-			cin >> confirmPassword;
-
-			if (password.length() < 6)
-				cerr << endl
-					 << "Error: password must be at least six characters long" << endl;
-
-			if (password != confirmPassword)
-				cerr << endl
-					 << "Error: passwords do not match" << endl;
-
-		} while (password.length() < 6 || password != confirmPassword || containsComma(password));
+		askPassword(&password, false);
 
 		if (opt2 == 2)
 		{ // driver

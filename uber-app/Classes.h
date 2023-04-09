@@ -31,6 +31,14 @@ public:
         cout << "Phone Number: " << phoneNum << endl;
     }
 
+    virtual void updateProfile()
+    {
+        cout << "Enter a hyphen (-) in any field that you do not want to modify" << endl;
+        // TODO: enter hyphen check
+        askFirstAndLastNames(&firstName, &lastName);
+        askPassword(&password, true);
+    }
+
     int getId() { return id; }
 };
 
@@ -129,6 +137,15 @@ public:
     {
         this->User::viewProfile();
         // TODO: more data?
+    }
+
+    void updateProfile() override
+    {
+        this->User::updateProfile();
+        askDOB(&day, &month, &year, 1);
+        askPhoneNum(&phoneNum, 1);
+
+        // TODO: edit file
     }
 
     void bookARide()
@@ -285,6 +302,15 @@ public:
         cout << "Rated by: " << ratedBy << " passengers" << endl;
         vehicle.viewData();
         // LATER: more data?
+    }
+
+    void updateProfile() override
+    {
+        this->User::updateProfile();
+        askDOB(&day, &month, &year, 2);
+        askPhoneNum(&phoneNum, 2);
+
+        // TODO: edit file
     }
 
     int viewAvailableRides()
