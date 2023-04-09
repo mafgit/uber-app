@@ -1,11 +1,10 @@
 #include "Classes.h"
-#include "Validations.h"
-#include "Menus.h"
+#include "Functions.h"
 #include <string>
 
 int main()
 {
-	// TODO: any string input must not have a comma
+	// LATER: any string input must not have a comma
 	cout << endl
 		 << "Welcome to Uber Application!" << endl;
 	int opt1, opt2;
@@ -54,7 +53,7 @@ start:
 		{
 			cout << endl
 				 << "Enter date of your birth [1 to 31]: ";
-			// TODO: check for no of days being correct for a particular month can be implemented
+			// LATER: check for no of days being correct for a particular month can be implemented
 			cin >> day;
 			cout << endl
 				 << "Enter month of your birth [1 to 12]: ";
@@ -158,6 +157,8 @@ start:
 			string type, make, model, trimLevel, plateNum, color;
 			int yearOfManufacture;
 
+			cout << endl
+				 << "Enter a number to select the type of your vehicle: " << endl;
 			type = typesMenu();
 
 			int minYearOfManufacture = current_year - 17;
@@ -240,14 +241,12 @@ start:
 		bool found = 0;
 		if (opt2 == 1)
 		{
-			// TODO: try to remove code duplication in login
 			ifstream passengers_in("passengers.txt");
 			string idStr, dayStr, monthStr, yearStr, firstNameStr, lastNameStr, phoneNumStr, passwordStr;
 			string line;
 
 			if (passengers_in)
 			{
-				istringstream ss;
 				while (!found && getline(passengers_in, line))
 				{
 					/*
@@ -258,17 +257,8 @@ start:
 						1		1		0
 					*/
 
-					ss.clear();
-					ss.str(line);
-
-					getline(ss, idStr, ',');
-					getline(ss, dayStr, ',');
-					getline(ss, monthStr, ',');
-					getline(ss, yearStr, ',');
-					getline(ss, firstNameStr, ',');
-					getline(ss, lastNameStr, ',');
-					getline(ss, phoneNumStr, ',');
-					getline(ss, passwordStr, ',');
+					string *fields[8] = {&idStr, &dayStr, &monthStr, &yearStr, &firstNameStr, &lastNameStr, &phoneNumStr, &passwordStr};
+					getFields(line, fields, 8);
 
 					if (phoneNum == phoneNumStr && password == passwordStr)
 					{
@@ -294,7 +284,27 @@ start:
 				cout << endl
 					 << "Logged in as passenger" << endl;
 				Passenger passenger(stoi(idStr), stoi(dayStr), stoi(monthStr), stoi(yearStr), firstNameStr, lastNameStr, phoneNumStr, passwordStr);
+
+			passengerMenu:
 				int opt = passenger.displayMenu();
+
+				if (opt == 1)
+					passenger.bookARide();
+				else if (opt == 3)
+					passenger.viewProfile();
+
+				if (opt != 5)
+				{
+					goto passengerMenu;
+				}
+				else
+				{
+
+					system("cls");
+					cout << endl
+						 << "Logged out!" << endl;
+					goto start;
+				}
 			}
 		}
 		else if (opt2 == 2)
@@ -307,28 +317,10 @@ start:
 
 			if (drivers_in)
 			{
-				istringstream ss;
 				while (!found && getline(drivers_in, line))
 				{
-					ss.clear();
-					ss.str(line);
-
-					getline(ss, idStr, ',');
-					getline(ss, dayStr, ',');
-					getline(ss, monthStr, ',');
-					getline(ss, yearStr, ',');
-					getline(ss, firstNameStr, ',');
-					getline(ss, lastNameStr, ',');
-					getline(ss, phoneNumStr, ',');
-					getline(ss, passwordStr, ',');
-					getline(ss, nicStr, ',');
-					getline(ss, typeStr, ',');
-					getline(ss, yearOfManufactureStr, ',');
-					getline(ss, makeStr, ',');
-					getline(ss, modelStr, ',');
-					getline(ss, trimLevelStr, ',');
-					getline(ss, plateNumStr, ',');
-					getline(ss, colorStr, ',');
+					string *fields[16] = {&idStr, &dayStr, &monthStr, &yearStr, &firstNameStr, &lastNameStr, &phoneNumStr, &passwordStr, &nicStr, &typeStr, &yearOfManufactureStr, &makeStr, &modelStr, &trimLevelStr, &plateNumStr, &colorStr};
+					getFields(line, fields, 16);
 
 					if (phoneNum == phoneNumStr && password == passwordStr)
 					{
@@ -356,7 +348,34 @@ start:
 
 				Vehicle vehicle(typeStr, stoi(yearOfManufactureStr), modelStr, makeStr, trimLevelStr, plateNumStr, colorStr);
 				Driver driver(stoi(idStr), stoi(dayStr), stoi(monthStr), stoi(yearStr), firstNameStr, lastNameStr, phoneNumStr, passwordStr, nicStr, vehicle);
+
+			driverMenu:
 				int opt = driver.displayMenu();
+
+				if (opt == 1)
+				{
+					// TODO: try to move this code into Classes.h
+					// TODO: keep repeating until acceptedId changes from -1 or driver enters a command to cancel
+					int acceptedId = -1;
+					while (acceptedId == -1)
+					{
+						acceptedId = driver.viewAvailableRides();
+					}
+				}
+				else if (opt == 3)
+					driver.viewProfile();
+
+				if (opt != 5)
+				{
+					goto driverMenu;
+				}
+				else
+				{
+					system("cls");
+					cout << endl
+						 << "Logged out!" << endl;
+					goto start;
+				}
 			}
 		}
 	}
