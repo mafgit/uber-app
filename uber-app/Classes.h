@@ -3,6 +3,7 @@
 #include <fstream>
 #include <windows.h>
 #include "Functions.h"
+#include "Questions.h"
 using namespace std;
 
 // LATER: admin class
@@ -35,8 +36,8 @@ public:
     {
         cout << "Enter a hyphen (-) in any field that you do not want to modify" << endl;
         // TODO: enter hyphen check
-        askFirstAndLastNames(&firstName, &lastName);
-        askPassword(&password, true);
+        askFirstAndLastNames(firstName, lastName);
+        askPassword(password, true);
     }
 
     int getId() { return id; }
@@ -142,8 +143,8 @@ public:
     void updateProfile() override
     {
         this->User::updateProfile();
-        askDOB(&day, &month, &year, 1);
-        askPhoneNum(&phoneNum, 1);
+        askDOB(day, month, year, 1);
+        askPhoneNum(phoneNum, 1);
 
         // TODO: edit file
     }
@@ -307,8 +308,8 @@ public:
     void updateProfile() override
     {
         this->User::updateProfile();
-        askDOB(&day, &month, &year, 2);
-        askPhoneNum(&phoneNum, 2);
+        askDOB(day, month, year, 2);
+        askPhoneNum(phoneNum, 2);
 
         // TODO: edit file
     }

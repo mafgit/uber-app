@@ -4,6 +4,10 @@
 #include <sstream>
 using namespace std;
 
+time_t now = time(NULL);
+tm *timePtr = localtime(&now);
+const int current_year = 1900 + timePtr->tm_year; // tm_year is relative to 1900
+
 bool doesPhoneNumOrNicExist(string str, bool isItPhoneNum, string fileName)
 {
     ifstream file_in(fileName);
@@ -241,4 +245,20 @@ void getFields(string line, string *fields[20], int num_fields)
 
     for (int i = 0; i < num_fields; i++)
         getline(ss, *(fields[i]), ',');
+}
+
+int getAge(int day, int month, int year)
+{
+    struct tm dob = {0};
+
+    dob.tm_mday = day;
+    dob.tm_mon = month - 1;    // tm_mon is from 0-11
+    dob.tm_year = year - 1900; // tm_year is relative to 1900
+
+    time_t then = mktime(&dob);
+    time_t now = time(NULL);               //
+    const int seconds_per_year = 31536000; // approx
+
+    double seconds = difftime(now, then);
+    return seconds / seconds_per_year;
 }

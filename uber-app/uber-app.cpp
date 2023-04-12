@@ -26,18 +26,17 @@ start:
 	bool is_err;
 	if (opt1 == 1)
 	{
-		askFirstAndLastNames(&firstName, &lastName);
-		askDOB(&day, &month, &year, opt2);
-		askPhoneNum(&phoneNum, opt2);
+		askFirstAndLastNames(firstName, lastName);
+		askDOB(day, month, year, opt2);
+		askPhoneNum(phoneNum, opt2);
 
 		if (opt2 == 2)
-			askNIC(&nic);
+			askNIC(nic);
 
-		askPassword(&password, false);
+		askPassword(password, false);
 
 		if (opt2 == 2)
 		{ // driver
-
 			string type, make, model, trimLevel, plateNum, color;
 			int yearOfManufacture;
 
@@ -62,7 +61,6 @@ start:
 
 			do
 			{
-
 				cout << endl
 					 << "Enter model of the vehicle [e.g. Corolla]: ";
 				cin >> model;
