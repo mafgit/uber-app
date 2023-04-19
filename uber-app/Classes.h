@@ -8,7 +8,7 @@ using namespace std;
 
 // LATER: admin class
 
-const int MAX_TRIES = 12; // LATER: change value
+const int MAX_TRIES = 2; // LATER: change value
 // const int MAX_BOOKINGS_TO_DISPLAY = 10;
 
 class User
@@ -54,9 +54,9 @@ class Booking
     string type = "";
     int fare = 0; // LATER: check if fare should be taken in float
     Passenger *passenger;
-    int passengerId;
+    int passengerId = -1;
     Driver *driver;
-    int driverId;
+    int driverId = -1;
     string bookedAt = "-";
     string completedAt = "-";
 
@@ -82,9 +82,37 @@ public:
         this->completedAt = completedAt;
     }
 
-    void updateStatus(string newStatus)
+    void update(string newStatus, int newDriverId, string newCompletedAt)
     {
         // TODO: update booking status
+        ifstream file("bookings.txt");
+
+        ofstream file2("bookings2.txt");
+        file2.close();
+        file2.open("bookings2.txt", ios::app);
+        // string idStr, statusStr, pickupLocationStr, dropoffLocationStr, typeStr,
+        // fareStr, passengerIdStr, bookedAtStr, driverIdStr, completedAtStr;
+
+        // string *fields[10] = {&idStr, &statusStr, &pickupLocationStr, &dropoffLocationStr, &typeStr, &fareStr, &passengerIdStr, &bookedAtStr, &driverIdStr, &completedAtStr};
+
+        string line, idStr;
+        while (getline(file, line))
+        {
+            ss.clear();
+            ss.str(line);
+            getline(ss, idStr, ',');
+
+            if (stoi(idStr) == id)
+                line = to_string(id) + "," + newStatus + "," + pickupLocation + "," + dropoffLocation + "," + type + "," + to_string(fare) + "," + to_string(passengerId) + "," + bookedAt + "," + to_string(newDriverId) + "," + newCompletedAt;
+
+            file2 << line << "\n";
+        }
+
+        file.close();
+        file2.close();
+
+        remove("bookings.txt");
+        rename("bookings2.txt", "bookings.txt");
     }
 
     void appendToFile();
@@ -162,6 +190,9 @@ public:
 
             cout << "Enter dropoff location (make sure not to use the same location as pickup): ";
             cin >> dropoff;
+
+            pickup = toupper(pickup);
+            dropoff = toupper(dropoff);
         } while (pickup < 'A' || pickup > 'Z' || dropoff < 'A' || dropoff > 'Z' || pickup == dropoff);
 
         cout << endl
@@ -204,7 +235,7 @@ public:
         }
         else
         {
-            booking.updateStatus("not accepted");
+            booking.update("unavailable", -1, "-");
             cout << endl
                  << endl
                  << "Your ride was not accepted by any driver" << endl
