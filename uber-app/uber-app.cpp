@@ -237,11 +237,18 @@ start:
 				if (opt == 1)
 				{
 					// TODO: try to move this code into Classes.h
-					// TODO: keep repeating until acceptedId changes from -1 or driver enters a command to cancel
+
 					int acceptedId = -1;
-					while (acceptedId == -1)
+					bool found = false;
+
+					while (acceptedId != -2 && found == false)
 					{
-						acceptedId = driver.viewAvailableRides();
+						driver.viewAvailableRides(acceptedId, found);
+						if (found)
+						{
+							// TODO: something like below
+							// updateBooking(booking, acceptedId, "accepted", driver.getId(), "-");
+						}
 					}
 				}
 				else if (opt == 3)

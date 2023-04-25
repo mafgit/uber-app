@@ -8,7 +8,7 @@ using namespace std;
 
 // LATER: admin class
 
-const int MAX_TRIES = 2; // LATER: change value
+const int MAX_TRIES = 3; // LATER: change value
 // const int MAX_BOOKINGS_TO_DISPLAY = 10;
 
 class User
@@ -34,8 +34,8 @@ public:
 
     virtual void updateProfile()
     {
-        cout << "Enter a hyphen (-) in any field that you do not want to modify" << endl;
-        // TODO: enter hyphen check
+        cout << "Enter a comma (,) in any field that you do not want to modify" << endl;
+        // TODO: enter comma check
         askFirstAndLastNames(firstName, lastName);
         askPassword(password, true);
     }
@@ -64,7 +64,7 @@ class Booking
 
 public:
     Booking() {}
-
+    Booking(int id) : id(id) {}
     Booking(int id, char pickupLocation, char dropoffLocation, string type, Passenger *passenger);
 
     // constructor for loading an already stored booking
@@ -82,37 +82,35 @@ public:
         this->completedAt = completedAt;
     }
 
-    void update(string newStatus, int newDriverId, string newCompletedAt)
+    friend void updateBooking(Booking &booking, string newStatus, int newDriverId, string newCompletedAt);
+
+    bool checkFound()
     {
-        // TODO: update booking status
         ifstream file("bookings.txt");
+        string idStr, statusStr, driverIdStr;
 
-        ofstream file2("bookings2.txt");
-        file2.close();
-        file2.open("bookings2.txt", ios::app);
-        // string idStr, statusStr, pickupLocationStr, dropoffLocationStr, typeStr,
-        // fareStr, passengerIdStr, bookedAtStr, driverIdStr, completedAtStr;
+        string line;
+        bool found = false;
 
-        // string *fields[10] = {&idStr, &statusStr, &pickupLocationStr, &dropoffLocationStr, &typeStr, &fareStr, &passengerIdStr, &bookedAtStr, &driverIdStr, &completedAtStr};
-
-        string line, idStr;
         while (getline(file, line))
         {
             ss.clear();
             ss.str(line);
             getline(ss, idStr, ',');
+            getline(ss, statusStr, ',');
+            for (int i = 0; i < 7; i++)
+                getline(ss, driverIdStr, ',');
 
-            if (stoi(idStr) == id)
-                line = to_string(id) + "," + newStatus + "," + pickupLocation + "," + dropoffLocation + "," + type + "," + to_string(fare) + "," + to_string(passengerId) + "," + bookedAt + "," + to_string(newDriverId) + "," + newCompletedAt;
+            if (stoi(idStr) == id && statusStr == "accepted")
+            {
+                driverId = stoi(driverIdStr);
+                // TODO: ride starting time
+                found = true;
+            }
 
-            file2 << line << "\n";
+            file.close();
+            return found;
         }
-
-        file.close();
-        file2.close();
-
-        remove("bookings.txt");
-        rename("bookings2.txt", "bookings.txt");
     }
 
     void appendToFile();
@@ -122,6 +120,38 @@ public:
         completedAt = getCurrentTime();
     }
 };
+
+void updateBooking(Booking &booking, string newStatus, int newDriverId, string newCompletedAt)
+{
+    ifstream file("bookings.txt");
+
+    ofstream file2("bookings2.txt");
+    file2.close();
+    file2.open("bookings2.txt", ios::app);
+    // string idStr, statusStr, pickupLocationStr, dropoffLocationStr, typeStr,
+    // fareStr, passengerIdStr, bookedAtStr, driverIdStr, completedAtStr;
+
+    // string *fields[10] = {&idStr, &statusStr, &pickupLocationStr, &dropoffLocationStr, &typeStr, &fareStr, &passengerIdStr, &bookedAtStr, &driverIdStr, &completedAtStr};
+
+    string line, idStr;
+    while (getline(file, line))
+    {
+        ss.clear();
+        ss.str(line);
+        getline(ss, idStr, ',');
+
+        if (stoi(idStr) == booking.id)
+            line = to_string(booking.id) + "," + newStatus + "," + booking.pickupLocation + "," + booking.dropoffLocation + "," + booking.type + "," + to_string(booking.fare) + "," + to_string(booking.passengerId) + "," + booking.bookedAt + "," + to_string(newDriverId) + "," + newCompletedAt;
+
+        file2 << line << "\n";
+    }
+
+    file.close();
+    file2.close();
+
+    remove("bookings.txt");
+    rename("bookings2.txt", "bookings.txt");
+}
 
 class Passenger : public User
 {
@@ -221,7 +251,7 @@ public:
                 Sleep(1000);
             }
 
-            // TODO: found = checkRideFound(booking);
+            found = booking.checkFound();
 
             if (!found)
                 tries++;
@@ -235,7 +265,7 @@ public:
         }
         else
         {
-            booking.update("unavailable", -1, "-");
+            updateBooking(booking, "unavailable", -1, "-");
             cout << endl
                  << endl
                  << "Your ride was not accepted by any driver" << endl
@@ -345,7 +375,7 @@ public:
         // TODO: edit file
     }
 
-    int viewAvailableRides()
+    void viewAvailableRides(int &acceptedId, bool &found)
     {
         system("cls");
 
@@ -354,7 +384,9 @@ public:
 
         string idStr, statusStr, pickupStr, dropoffStr, typeStr, fareStr, passengerIdStr, driverIdStr, bookedAtStr, completedAtStr;
         Booking booking;
-        int acceptedId;
+
+        acceptedId = -1;
+        found = false;
 
         if (file)
         {
@@ -383,13 +415,31 @@ public:
             }
 
             cout << endl
-                 << "Enter a booking ID to accept it: ";
+                 << "Enter a booking ID to accept it (enter -2 to cancel): ";
             cin >> acceptedId;
 
-            // TODO: check if acceptedId is available
+            if (acceptedId < -1)
+                acceptedId = -2;
+
+            if (acceptedId > -1)
+            {
+                ifstream file("bookings.txt");
+                string line, idStr, statusStr;
+
+                while (getline(file, line))
+                {
+                    ss.clear();
+                    ss.str(line);
+                    getline(ss, idStr, ',');
+                    getline(ss, statusStr, ',');
+
+                    if (stoi(idStr) == acceptedId && statusStr == "available")
+                        found = true;
+                }
+            }
         }
 
-        return acceptedId;
+        file.close();
     }
 };
 
