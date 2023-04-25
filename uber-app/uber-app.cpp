@@ -22,18 +22,35 @@ start:
 	string firstName, lastName, phoneNum, password;
 	int day, month, year;
 	string nic;
+	int age;
 
 	bool is_err;
 	if (opt1 == 1)
 	{
-		askFirstAndLastNames(firstName, lastName);
-		askDOB(day, month, year, opt2);
-		askPhoneNum(phoneNum, opt2);
+		askName(firstName, true, false);
+		askName(lastName, false, false);
+		do
+		{
+			askDate(1, day, 1, 31, false);
+			askDate(2, month, 1, 12, false);
+			askDate(3, year, current_year - 120, current_year, false);
+
+			age = getAge(day, month, year);
+			if (opt2 == 2)
+			{
+				if (age < 18)
+					cerr << endl
+						 << "Error: driver must be at least 18 years old" << endl;
+			}
+		} while (opt2 == 2 && age < 18);
+
+		// askDOB(day, month, year, opt2 == 1, false);
+		askPhoneNum(phoneNum, opt2 == 1, false);
 
 		if (opt2 == 2)
 			askNIC(nic);
 
-		askPassword(password, false);
+		askPassword(password, "-", false);
 
 		if (opt2 == 2)
 		{ // driver
@@ -174,6 +191,8 @@ start:
 					passenger.bookARide();
 				else if (opt == 3)
 					passenger.viewProfile();
+				else if (opt == 4)
+					passenger.updateProfile(true);
 
 				if (opt != 5)
 				{
@@ -251,6 +270,8 @@ start:
 				}
 				else if (opt == 3)
 					driver.viewProfile();
+				else if (opt == 4)
+					driver.updateProfile(false);
 
 				if (opt != 5)
 				{

@@ -32,12 +32,60 @@ public:
         cout << "Phone Number: " << phoneNum << endl;
     }
 
-    virtual void updateProfile()
+    virtual void updateProfile(bool isPassenger)
     {
-        cout << "Enter a comma (,) in any field that you do not want to modify" << endl;
-        // TODO: enter comma check
-        askFirstAndLastNames(firstName, lastName);
-        askPassword(password, true);
+        cout << endl
+             << "If you do not want to update a field then enter a hyphen (-) in it if it is a text field and -1 if it is a number field" << endl;
+
+        string firstName2, lastName2, password2;
+        int day2, month2, year2;
+        string phoneNum2;
+        int age;
+
+        askName(firstName2, true, true);
+        askName(lastName2, false, true);
+        askPassword(password2, password, true);
+
+        do
+        {
+            askDate(1, day2, 1, 31, true);
+            askDate(2, month2, 1, 12, true);
+            askDate(3, year2, current_year - 120, current_year, true);
+
+            if (day2 == -1)
+                day2 = day;
+            if (month2 == -1)
+                month2 = month;
+            if (year2 == -1)
+                year2 = year;
+
+            if (!isPassenger)
+            {
+                age = getAge(day2, month2, year2);
+                if (age < 18)
+                    cerr << endl
+                         << "Error: driver must be at least 18 years old" << endl;
+            }
+        } while (!isPassenger && age < 18);
+
+        askPhoneNum(phoneNum2, isPassenger, true);
+
+        if (firstName2 != "-")
+            firstName = firstName2;
+        if (lastName2 != "-")
+            lastName = lastName2;
+        if (password2 != "-")
+            password = password2;
+        if (phoneNum2 != "-" && phoneNum2 != "0")
+            phoneNum = phoneNum2;
+        if (day2 != -1)
+            day = day2;
+        if (month2 != -1)
+            month = month2;
+        if (year2 != -1)
+            year = year2;
+
+        // TODO: update the member variables and file
     }
 
     int getId() { return id; }
@@ -202,14 +250,11 @@ public:
         // TODO: more data?
     }
 
-    void updateProfile() override
-    {
-        this->User::updateProfile();
-        askDOB(day, month, year, 1);
-        askPhoneNum(phoneNum, 1);
-
-        // TODO: edit file
-    }
+    // void updateProfile() override
+    // {
+    //     this->User::updateProfile();
+    //     // TODO: edit file
+    // }
 
     void bookARide()
     {
@@ -270,6 +315,7 @@ public:
         else
         {
             updateBooking(booking, "unavailable", -1, "-");
+            // TODO: check that if ctrl+c is pressed then the line above can be made to run or not
             cout << endl
                  << endl
                  << "Your ride was not accepted by any driver" << endl
@@ -370,14 +416,12 @@ public:
         // LATER: more data?
     }
 
-    void updateProfile() override
-    {
-        this->User::updateProfile();
-        askDOB(day, month, year, 2);
-        askPhoneNum(phoneNum, 2);
+    // void updateProfile() override
+    // {
+    //     this->User::updateProfile();
 
-        // TODO: edit file
-    }
+    //     // TODO: edit file
+    // }
 
     void viewAvailableRides(int &acceptedId, Booking &booking, bool &found)
     {
