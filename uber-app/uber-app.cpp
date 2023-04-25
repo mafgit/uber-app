@@ -240,15 +240,13 @@ start:
 
 					int acceptedId = -1;
 					bool found = false;
+					Booking booking;
 
 					while (acceptedId != -2 && found == false)
 					{
-						driver.viewAvailableRides(acceptedId, found);
+						driver.viewAvailableRides(acceptedId, booking, found);
 						if (found)
-						{
-							// TODO: something like below
-							// updateBooking(booking, acceptedId, "accepted", driver.getId(), "-");
-						}
+							updateBooking(booking, "accepted", driver.getId(), "-");
 					}
 				}
 				else if (opt == 3)

@@ -68,7 +68,7 @@ public:
     Booking(int id, char pickupLocation, char dropoffLocation, string type, Passenger *passenger);
 
     // constructor for loading an already stored booking
-    void loadBooking(int id, string status, char pickupLocation, char dropoffLocation, string type, int fare, int passengerId, string bookedAtStr, int driverId, string completedAt)
+    void load(int id, string status, char pickupLocation, char dropoffLocation, string type, int fare, int passengerId, string bookedAtStr, int driverId, string completedAt)
     {
         this->id = id;
         this->status = status;
@@ -97,15 +97,19 @@ public:
             ss.clear();
             ss.str(line);
             getline(ss, idStr, ',');
-            getline(ss, statusStr, ',');
-            for (int i = 0; i < 7; i++)
-                getline(ss, driverIdStr, ',');
 
-            if (stoi(idStr) == id && statusStr == "accepted")
+            if (stoi(idStr) == id)
             {
-                driverId = stoi(driverIdStr);
-                // TODO: ride starting time
-                found = true;
+                getline(ss, statusStr, ',');
+                if (statusStr == "accepted")
+                {
+                    for (int i = 0; i < 7; i++)
+                        getline(ss, driverIdStr, ',');
+
+                    driverId = stoi(driverIdStr);
+                    // TODO: ride starting time
+                    found = true;
+                }
             }
 
             file.close();
@@ -375,7 +379,7 @@ public:
         // TODO: edit file
     }
 
-    void viewAvailableRides(int &acceptedId, bool &found)
+    void viewAvailableRides(int &acceptedId, Booking &booking, bool &found)
     {
         system("cls");
 
@@ -383,7 +387,6 @@ public:
         string line;
 
         string idStr, statusStr, pickupStr, dropoffStr, typeStr, fareStr, passengerIdStr, driverIdStr, bookedAtStr, completedAtStr;
-        Booking booking;
 
         acceptedId = -1;
         found = false;
@@ -397,7 +400,7 @@ public:
 
                 if (statusStr == "available" && (this->vehicle).getType() == typeStr)
                 {
-                    booking.loadBooking(stoi(idStr), statusStr, pickupStr[0], dropoffStr[0], typeStr, stoi(fareStr), stoi(passengerIdStr), bookedAtStr, stoi(driverIdStr), completedAtStr);
+                    booking.load(stoi(idStr), statusStr, pickupStr[0], dropoffStr[0], typeStr, stoi(fareStr), stoi(passengerIdStr), bookedAtStr, stoi(driverIdStr), completedAtStr);
 
                     cout << endl
                          << "Booking ID: " << idStr;
