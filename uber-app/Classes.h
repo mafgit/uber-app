@@ -159,10 +159,10 @@ public:
                     found = true;
                 }
             }
-
-            file.close();
-            return found;
         }
+
+        file.close();
+        return found;
     }
 
     void appendToFile();
@@ -170,6 +170,70 @@ public:
     void completeRide()
     {
         completedAt = getCurrentTime();
+    }
+
+    void getFromFile()
+    {
+        ifstream file("bookings.txt");
+        string idStr, statusStr, pickupLocationStr, dropoffLocationStr, typeStr,
+            fareStr, passengerIdStr, bookedAtStr, driverIdStr, completedAtStr;
+        string line;
+        bool found = false;
+
+        string *fields[10] = {&idStr, &statusStr, &pickupLocationStr, &dropoffLocationStr, &typeStr, &fareStr, &passengerIdStr, &bookedAtStr, &driverIdStr, &completedAtStr};
+        while (getline(file, line))
+        {
+            ss.clear();
+            ss.str(line);
+            getFields(line, fields, 10);
+            // getline(ss, idStr, ',');
+
+            if (stoi(idStr) == id)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (found)
+        {
+            status = statusStr;
+            pickupLocation = pickupLocationStr[0];
+            dropoffLocation = dropoffLocationStr[0];
+            type = typeStr;
+            // fare = stoi(fareStr);
+            // passengerId = stoi(passengerIdStr);
+            // bookedAt = bookedAtStr;
+            // driverId = stoi(driverIdStr);
+            // completedAt = completedAtStr;
+        }
+
+        file.close();
+    }
+
+    void display()
+    {
+        cout << endl
+             << "Booking ID: " << id;
+        if (driverId != -1)
+        {
+            cout << endl
+                 << "Driver ID: " << driverId;
+            // TODO:
+            // driver->setId(driverId);
+            // driver->getFromFile();
+            // cout ...
+        }
+        cout << endl
+             << "Pickup Location: " << pickupLocation;
+        cout << endl
+             << "Dropoff Location: " << dropoffLocation;
+        cout << endl
+             << "Average Distance: " << abs(dropoffLocation - pickupLocation) << " km";
+        cout << endl
+             << "Vehicle Type: " << type;
+        cout << endl
+             << "Booked at: " << bookedAt << endl;
     }
 };
 
@@ -310,7 +374,11 @@ public:
 
         if (found)
         {
-            // TODO: code if ride found
+            cout << endl
+                 << "Ride found!" << endl;
+
+            booking.getFromFile();
+            booking.display();
         }
         else
         {
@@ -445,48 +513,36 @@ public:
                 if (statusStr == "available" && (this->vehicle).getType() == typeStr)
                 {
                     booking.load(stoi(idStr), statusStr, pickupStr[0], dropoffStr[0], typeStr, stoi(fareStr), stoi(passengerIdStr), bookedAtStr, stoi(driverIdStr), completedAtStr);
-
-                    cout << endl
-                         << "Booking ID: " << idStr;
-                    cout << endl
-                         << "Pickup Location: " << pickupStr;
-                    cout << endl
-                         << "Dropoff Location: " << dropoffStr;
-                    cout << endl
-                         << "Average Distance: " << abs(dropoffStr[0] - pickupStr[0]);
-                    cout << endl
-                         << "Vehicle Type: " << typeStr;
-                    cout << endl
-                         << "Booked at: " << bookedAtStr;
+                    booking.display();
                 }
-            }
 
-            cout << endl
-                 << "Enter a booking ID to accept it (enter -2 to cancel): ";
-            cin >> acceptedId;
+                cout << endl
+                     << "Enter a booking ID to accept it (enter -2 to cancel): ";
+                cin >> acceptedId;
 
-            if (acceptedId < -1)
-                acceptedId = -2;
+                if (acceptedId < -1)
+                    acceptedId = -2;
 
-            if (acceptedId > -1)
-            {
-                ifstream file("bookings.txt");
-                string line, idStr, statusStr;
-
-                while (getline(file, line))
+                if (acceptedId > -1)
                 {
-                    ss.clear();
-                    ss.str(line);
-                    getline(ss, idStr, ',');
-                    getline(ss, statusStr, ',');
+                    ifstream file("bookings.txt");
+                    string line, idStr, statusStr;
 
-                    if (stoi(idStr) == acceptedId && statusStr == "available")
-                        found = true;
+                    while (getline(file, line))
+                    {
+                        ss.clear();
+                        ss.str(line);
+                        getline(ss, idStr, ',');
+                        getline(ss, statusStr, ',');
+
+                        if (stoi(idStr) == acceptedId && statusStr == "available")
+                            found = true;
+                    }
                 }
             }
-        }
 
-        file.close();
+            file.close();
+        }
     }
 };
 

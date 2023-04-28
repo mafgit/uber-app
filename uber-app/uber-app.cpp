@@ -261,11 +261,16 @@ start:
 					bool found = false;
 					Booking booking;
 
-					while (acceptedId != -2 && found == false)
+					while (1)
 					{
 						driver.viewAvailableRides(acceptedId, booking, found);
+						if (acceptedId == -2)
+							break;
 						if (found)
+						{
 							updateBooking(booking, "accepted", driver.getId(), "-");
+							break;
+						}
 					}
 				}
 				else if (opt == 3)
