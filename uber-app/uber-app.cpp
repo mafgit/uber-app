@@ -189,6 +189,8 @@ start:
 
 				if (opt == 1)
 					passenger.bookARide();
+				if (opt == 2)
+					passenger.viewHistory(true);
 				else if (opt == 3)
 					passenger.viewProfile();
 				else if (opt == 4)
@@ -273,6 +275,8 @@ start:
 						}
 					}
 				}
+				if (opt == 2)
+					driver.viewHistory(false);
 				else if (opt == 3)
 					driver.viewProfile();
 				else if (opt == 4)

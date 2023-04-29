@@ -87,6 +87,7 @@ public:
 
         // TODO: update the member variables and file
     }
+    void viewHistory(bool);
 
     int getId() { return id; }
 };
@@ -103,7 +104,6 @@ class Booking
     int fare = 0; // LATER: check if fare should be taken in float
     Passenger *passenger;
     int passengerId = -1;
-    Driver *driver;
     int driverId = -1;
     string bookedAt = "-";
     string completedAt = "-";
@@ -201,6 +201,7 @@ public:
             pickupLocation = pickupLocationStr[0];
             dropoffLocation = dropoffLocationStr[0];
             type = typeStr;
+            // TODO:
             // fare = stoi(fareStr);
             // passengerId = stoi(passengerIdStr);
             // bookedAt = bookedAtStr;
@@ -211,30 +212,7 @@ public:
         file.close();
     }
 
-    void display()
-    {
-        cout << endl
-             << "Booking ID: " << id;
-        if (driverId != -1)
-        {
-            cout << endl
-                 << "Driver ID: " << driverId;
-            // TODO:
-            // driver->setId(driverId);
-            // driver->getFromFile();
-            // cout ...
-        }
-        cout << endl
-             << "Pickup Location: " << pickupLocation;
-        cout << endl
-             << "Dropoff Location: " << dropoffLocation;
-        cout << endl
-             << "Average Distance: " << abs(dropoffLocation - pickupLocation) << " km";
-        cout << endl
-             << "Vehicle Type: " << type;
-        cout << endl
-             << "Booked at: " << bookedAt << endl;
-    }
+    void display(bool);
 };
 
 void updateBooking(Booking &booking, string newStatus, int newDriverId, string newCompletedAt)
@@ -378,7 +356,7 @@ public:
                  << "Ride found!" << endl;
 
             booking.getFromFile();
-            booking.display();
+            booking.display(true);
         }
         else
         {
@@ -389,6 +367,52 @@ public:
                  << "Your ride was not accepted by any driver" << endl
                  << "Please try again later" << endl;
         }
+    }
+
+    void displayToUser()
+    {
+        cout << endl
+             << "Passenger ID: " << id << endl;
+        cout << "Passenger Name: " << firstName << " " << lastName << endl;
+        cout << "Passenger Phone Number: " << phoneNum << endl;
+    }
+
+    void setId(int id) { this->id = id; }
+
+    void getFromFile()
+    {
+
+        ifstream file("passengers.txt");
+        string idStr, dayStr, monthStr, yearStr, firstNameStr, lastNameStr, phoneNumStr;
+        string line;
+        string *fields[7] = {&idStr, &dayStr, &monthStr, &yearStr, &firstNameStr, &lastNameStr, &phoneNumStr};
+        bool found = false;
+
+        while (getline(file, line))
+        {
+            ss.clear();
+            ss.str(line);
+            getFields(line, fields, 7);
+
+            if (stoi(idStr) == id)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (found)
+        {
+            this->id = stoi(idStr);
+            this->day = stoi(dayStr);
+            this->month = stoi(monthStr);
+            this->year = stoi(yearStr);
+            this->firstName = firstNameStr;
+            this->lastName = lastNameStr;
+            this->phoneNum = phoneNumStr;
+        }
+
+        file.close();
     }
 };
 
@@ -428,6 +452,17 @@ public:
         cout << "Type: " << type << endl;
         cout << "Color: " << color << endl;
         cout << "Plate Number: " << plateNum << endl;
+    }
+
+    void setDetails(string type, int yearOfManufacture, string model, string make, string trimLevel, string plateNum, string color)
+    {
+        this->type = type;
+        this->yearOfManufacture = yearOfManufacture;
+        this->model = model;
+        this->make = make;
+        this->trimLevel = trimLevel;
+        this->plateNum = plateNum;
+        this->color = color;
     }
 };
 
@@ -478,7 +513,7 @@ public:
     {
         this->User::viewProfile();
         cout << "NIC: " << nic << endl;
-        cout << "Average Rating: " << (ratedBy == 0 ? 0 : sumOfRatings / ratedBy) << endl;
+        cout << "Average Rating: " << getRating() << endl;
         cout << "Rated by: " << ratedBy << " passengers" << endl;
         vehicle.viewData();
         // LATER: more data?
@@ -513,7 +548,7 @@ public:
                 if (statusStr == "available" && (this->vehicle).getType() == typeStr)
                 {
                     booking.load(stoi(idStr), statusStr, pickupStr[0], dropoffStr[0], typeStr, stoi(fareStr), stoi(passengerIdStr), bookedAtStr, stoi(driverIdStr), completedAtStr);
-                    booking.display();
+                    booking.display(false);
                 }
 
                 cout << endl
@@ -544,6 +579,68 @@ public:
             file.close();
         }
     }
+
+    void setId(int id)
+    {
+        this->id = id;
+    }
+
+    float getRating()
+    {
+        return (ratedBy == 0) ? 0 : sumOfRatings / ratedBy;
+    }
+
+    void getFromFile()
+    {
+
+        ifstream file("drivers.txt");
+        string idStr, dayStr, monthStr, yearStr, firstNameStr, lastNameStr, phoneNumStr, passwordStr;
+        string typeStr, yearOfManufactureStr, modelStr, makeStr, trimLevelStr, plateNumStr, colorStr;
+        string nicStr;
+        string line;
+        string *fields[16] = {&idStr, &dayStr, &monthStr, &yearStr, &firstNameStr, &lastNameStr, &phoneNumStr, &passwordStr, &nicStr, &typeStr, &yearOfManufactureStr, &makeStr, &modelStr, &trimLevelStr, &plateNumStr, &colorStr};
+        bool found = false;
+
+        while (getline(file, line))
+        {
+            ss.clear();
+            ss.str(line);
+            getFields(line, fields, 16);
+
+            if (stoi(idStr) == id)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (found)
+        {
+            this->id = stoi(idStr);
+            this->day = stoi(dayStr);
+            this->month = stoi(monthStr);
+            this->year = stoi(yearStr);
+            this->firstName = firstNameStr;
+            this->lastName = lastNameStr;
+            this->phoneNum = phoneNumStr;
+            this->password = passwordStr;
+            this->nic = nicStr;
+            vehicle.setDetails(typeStr, stoi(yearOfManufactureStr), modelStr, makeStr, trimLevelStr, plateNumStr, colorStr);
+        }
+
+        file.close();
+    }
+
+    void displayToUser()
+    {
+        cout << endl
+             << "Driver ID: " << id << endl;
+        cout << "Driver Name: " << firstName << " " << lastName << endl;
+        cout << "Driver Rating: " << getRating() << "/5" << endl;
+        cout << "Driver Rated By: " << ratedBy << " passengers" << endl;
+        cout << "Driver Phone Number: " << phoneNum << endl;
+        cout << "Driver NIC: " << nic << endl;
+    }
 };
 
 Booking::Booking(int id, char pickupLocation, char dropoffLocation, string type, Passenger *passenger)
@@ -556,8 +653,6 @@ Booking::Booking(int id, char pickupLocation, char dropoffLocation, string type,
     this->passengerId = passenger->getId();
     this->fare = fare_per_km * abs(dropoffLocation - pickupLocation); // TODO: also use type of vehicle to calculate cost
     bookedAt = getCurrentTime();
-
-    // TODO: set driver
 }
 
 void Booking::appendToFile()
@@ -566,4 +661,70 @@ void Booking::appendToFile()
     file << id << "," << status << "," << pickupLocation << "," << dropoffLocation << "," << type << ","
          << fare << "," << passengerId << "," << bookedAt << "," << driverId << "," << completedAt << "\n";
     file.close();
+}
+
+void Booking::display(bool fromPassenger)
+{
+    cout << endl
+         << "Booking ID: " << id;
+
+    if (fromPassenger)
+    {
+        if (driverId != -1)
+        {
+            Driver driver;
+            driver.setId(driverId);
+            driver.getFromFile();
+            driver.displayToUser();
+        }
+    }
+    else
+    {
+        if (passengerId != -1)
+        {
+            Passenger p;
+            p.setId(id);
+            p.getFromFile();
+            p.displayToUser(); // BUG: phoneNum & name blank
+        }
+    }
+    cout << "Status: " << status;
+    cout << endl
+         << "Fare: Rs. " << fare;
+    cout << endl
+         << "Pickup Location: " << pickupLocation;
+    cout << endl
+         << "Dropoff Location: " << dropoffLocation;
+    cout << endl
+         << "Average Distance: " << abs(dropoffLocation - pickupLocation) << " km";
+    cout << endl
+         << "Vehicle Type: " << type;
+    cout << endl
+         << "Booked at: " << bookedAt << endl; // BUG: booked at displaying as "-"
+}
+
+void User::viewHistory(bool isPassenger)
+{
+    ifstream file("bookings.txt");
+    string line;
+
+    string idStr, statusStr, pickupStr, dropoffStr, typeStr, fareStr, passengerIdStr, driverIdStr, bookedAtStr, completedAtStr;
+    Booking booking;
+
+    if (file)
+    {
+        while (getline(file, line))
+        {
+            string *fields[10] = {&idStr, &statusStr, &pickupStr, &dropoffStr, &typeStr, &fareStr, &passengerIdStr, &bookedAtStr, &driverIdStr, &completedAtStr};
+            getFields(line, fields, 10);
+
+            if ((!isPassenger && stoi(driverIdStr) == id) || (isPassenger && stoi(passengerIdStr) == id))
+            {
+                booking.load(stoi(idStr), statusStr, pickupStr[0], dropoffStr[0], typeStr, stoi(fareStr), stoi(passengerIdStr), bookedAtStr, stoi(driverIdStr), completedAtStr);
+                booking.display(isPassenger);
+            }
+        }
+
+        file.close();
+    }
 }
