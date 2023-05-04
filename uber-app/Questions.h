@@ -268,7 +268,6 @@ void askVehicle(bool editing, string &type, int &yearOfManufacture, string &make
 
      do
      {
-
           cout << endl
                << "Enter color of the vehicle [e.g. blue]: ";
           cin >> color;

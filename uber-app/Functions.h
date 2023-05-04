@@ -234,13 +234,13 @@ string getCurrentTime()
     time_t current_time;
     current_time = time(NULL);
     string time = ctime(&current_time);
-    time[time.length() - 1] = ' '; // LATER: check '\0'
+    time[time.length() - 1] = ' ';
     return time;
 }
 
 istringstream ss;
 
-void getFields(string line, string *fields[20], int num_fields)
+void getFields(string line, string **fields, int num_fields)
 {
     ss.clear();
     ss.str(line);
@@ -279,4 +279,36 @@ int getAge(int day, int month, int year)
 
     double seconds = difftime(now, then);
     return seconds / seconds_per_year;
+}
+
+void addRating(int id, int rating)
+{
+    ifstream file("drivers.csv");
+
+    ofstream file2("drivers2.csv");
+    file2.close();
+    file2.open("drivers2.csv", ios::app);
+    string line;
+    string idStr, dayStr, monthStr, yearStr, firstNameStr, lastNameStr, phoneNumStr, passwordStr;
+    string typeStr, yearOfManufactureStr, modelStr, makeStr, trimLevelStr, plateNumStr, colorStr;
+    string nicStr, sumOfRatingsStr, ratedByStr;
+    string *fields[18] = {&idStr, &dayStr, &monthStr, &yearStr, &firstNameStr, &lastNameStr, &phoneNumStr, &passwordStr, &nicStr, &typeStr, &yearOfManufactureStr, &makeStr, &modelStr, &trimLevelStr, &plateNumStr, &colorStr, &sumOfRatingsStr, &ratedByStr};
+
+    while (getline(file, line))
+    {
+        ss.clear();
+        ss.str(line);
+        getFields(line, fields, 18);
+
+        if (stoi(idStr) == id)
+            line = id + "," + dayStr + "," + monthStr + "," + yearStr + "," + firstNameStr + "," + lastNameStr + "," + phoneNumStr + "," + passwordStr + "," + nicStr + "," + typeStr + "," + yearOfManufactureStr + "," + makeStr + "," + modelStr + "," + trimLevelStr + "," + plateNumStr + "," + colorStr + "," + to_string(stoi(sumOfRatingsStr) + rating) + "," + to_string(stoi(ratedByStr) + 1);
+
+        file2 << line << "\n";
+    }
+
+    file.close();
+    file2.close();
+
+    remove("drivers.csv");
+    rename("drivers2.csv", "drivers.csv");
 }

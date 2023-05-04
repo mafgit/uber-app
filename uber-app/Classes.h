@@ -6,10 +6,7 @@
 #include "Questions.h"
 using namespace std;
 
-// LATER: admin class
-
-const int MAX_TRIES = 3; // LATER: change value
-// const int MAX_BOOKINGS_TO_DISPLAY = 10;
+const int MAX_TRIES = 8; // LATER: change value
 
 class User
 {
@@ -101,10 +98,12 @@ class Booking
     char pickupLocation = '-', dropoffLocation = '-';
     string type = "";
     int fare = 0;
+    int avgDistance = 0;
     Passenger *passenger;
     int passengerId = -1;
     int driverId = -1;
     string bookedAt = "-";
+    string startedAt = "-";
     string completedAt = "-";
 
     const int fare_per_km = 25;
@@ -115,26 +114,28 @@ public:
     Booking(int id, char pickupLocation, char dropoffLocation, string type, Passenger *passenger);
 
     // constructor for loading an already stored booking
-    void load(int id, string status, char pickupLocation, char dropoffLocation, string type, int fare, int passengerId, string bookedAtStr, int driverId, string completedAt)
+    void load(int id, string status, char pickupLocation, char dropoffLocation, string type, int fare, int passengerId, string bookedAt, int driverId, string startedAt, string completedAt)
     {
         this->id = id;
         this->status = status;
         this->pickupLocation = pickupLocation;
         this->dropoffLocation = dropoffLocation;
+        avgDistance = abs(dropoffLocation - pickupLocation);
         this->type = type;
         this->fare = fare;
         this->passengerId = passengerId;
         this->bookedAt = bookedAt;
         this->driverId = driverId;
+        this->startedAt = startedAt;
         this->completedAt = completedAt;
     }
 
-    friend void updateBooking(Booking &booking, string newStatus, int newDriverId, string newCompletedAt);
+    friend void updateBooking(Booking &booking, string newStatus, int newDriverId, string newStartedAt, string newCompletedAt);
 
-    bool checkFound()
+    bool checkStatus(string givenStatus, string givenStatus2)
     {
         ifstream file("bookings.csv");
-        string idStr, statusStr, driverIdStr;
+        string idStr, statusStr, pickupStr, dropoffStr, driverIdStr;
 
         string line;
         bool found = false;
@@ -148,13 +149,19 @@ public:
             if (stoi(idStr) == id)
             {
                 getline(ss, statusStr, ',');
-                if (statusStr == "accepted")
+                getline(ss, pickupStr, ',');
+                getline(ss, dropoffStr, ',');
+
+                pickupLocation = pickupStr[0];
+                dropoffLocation = dropoffStr[0];
+                avgDistance = abs(pickupLocation - dropoffLocation);
+
+                if (statusStr == givenStatus || statusStr == givenStatus2)
                 {
-                    for (int i = 0; i < 7; i++)
+                    for (int i = 0; i < 5; i++)
                         getline(ss, driverIdStr, ',');
 
                     driverId = stoi(driverIdStr);
-                    // TODO: ride starting time
                     found = true;
                 }
             }
@@ -175,16 +182,16 @@ public:
     {
         ifstream file("bookings.csv");
         string idStr, statusStr, pickupLocationStr, dropoffLocationStr, typeStr,
-            fareStr, passengerIdStr, bookedAtStr, driverIdStr, completedAtStr;
+            fareStr, passengerIdStr, bookedAtStr, driverIdStr, startedAtStr, completedAtStr;
         string line;
         bool found = false;
 
-        string *fields[10] = {&idStr, &statusStr, &pickupLocationStr, &dropoffLocationStr, &typeStr, &fareStr, &passengerIdStr, &bookedAtStr, &driverIdStr, &completedAtStr};
+        string *fields[11] = {&idStr, &statusStr, &pickupLocationStr, &dropoffLocationStr, &typeStr, &fareStr, &passengerIdStr, &bookedAtStr, &driverIdStr, &startedAtStr, &completedAtStr};
         while (getline(file, line))
         {
             ss.clear();
             ss.str(line);
-            getFields(line, fields, 10);
+            getFields(line, fields, 11);
             // getline(ss, idStr, ',');
 
             if (stoi(idStr) == id)
@@ -200,11 +207,11 @@ public:
             pickupLocation = pickupLocationStr[0];
             dropoffLocation = dropoffLocationStr[0];
             type = typeStr;
-            // LATER:
             fare = stoi(fareStr);
             passengerId = stoi(passengerIdStr);
             bookedAt = bookedAtStr;
             driverId = stoi(driverIdStr);
+            startedAt = startedAtStr;
             completedAt = completedAtStr;
         }
 
@@ -212,9 +219,13 @@ public:
     }
 
     void display(bool);
+
+    string getCompletedAt() { return completedAt; }
+    int getAvgDistance() { return avgDistance; }
+    int getDriverId() { return driverId; }
 };
 
-void updateBooking(Booking &booking, string newStatus, int newDriverId, string newCompletedAt)
+void updateBooking(Booking &booking, string newStatus, int newDriverId, string newStartedAt, string newCompletedAt)
 {
     ifstream file("bookings.csv");
 
@@ -273,14 +284,8 @@ public:
             cout << "3) View profile" << endl;
             cout << "4) Update profile" << endl;
             cout << "5) Logout" << endl;
-            // LATER: 6) Delete account
             cin >> opt;
         } while (opt > 5 || opt < 1);
-
-        // if (opt == 1)
-        //     bookARide();
-        // if (opt == 3)
-        //     viewProfile();
 
         return opt;
     }
@@ -364,7 +369,7 @@ public:
                 Sleep(1000);
             }
 
-            found = booking.checkFound();
+            found = booking.checkStatus("accepted", "started");
 
             if (!found)
                 tries++;
@@ -379,10 +384,72 @@ public:
 
             booking.getFromFile();
             booking.display(true);
+
+            int tries2 = 0;
+            bool started = false;
+
+            while (tries2 < MAX_TRIES && !started)
+            { // LATER: different const
+
+                cout << endl
+                     << "Wait... ";
+                for (int i = 1; i <= 5; i++)
+                {
+                    cout << i << " ";
+                    Sleep(1000);
+                }
+                cout << endl;
+
+                started = booking.checkStatus("started", "");
+
+                if (!started)
+                    tries2++;
+                else
+                {
+                    cout << "Ride started" << endl;
+                    for (int i = 0; i < booking.getAvgDistance() + 6; i++)
+                    {
+                        cout << endl
+                             << "Wait... " << i;
+                        Sleep(1000);
+                    }
+                    cout << endl;
+
+                    bool completed = booking.checkStatus("completed", "");
+                    if (completed)
+                    {
+                        cout << endl
+                             << "Ride completed!" << endl;
+
+                        int rating;
+
+                        do
+                        {
+                            cout << "Enter rating out of 5: " << endl;
+                            cin >> rating;
+                        } while (rating > 5 || rating < 0);
+
+                        addRating(booking.getDriverId(), rating);
+                    }
+                }
+            }
+
+            if (!found)
+            {
+                updateBooking(booking, "unavailable", -1, "-", "-");
+                // LATER: check that if ctrl+c is pressed then the line above can be made to run or not
+                cout << endl
+                     << endl
+                     << "Your ride was not started by the driver" << endl
+                     << "Please try again later" << endl;
+            }
+            else
+            {
+            }
         }
         else
         {
-            updateBooking(booking, "unavailable", -1, "-");
+            updateBooking(booking, "unavailable", -1, "-", "-");
             // LATER: check that if ctrl+c is pressed then the line above can be made to run or not
             cout << endl
                  << endl
@@ -594,15 +661,14 @@ public:
         rename("drivers2.csv", "drivers.csv");
     }
 
-    void
-    viewAvailableRides(int &acceptedId, Booking &booking, bool &found)
+    void viewAvailableRides(int &acceptedId, Booking &booking, bool &found)
     {
         system("cls");
 
         ifstream file("bookings.csv");
         string line;
 
-        string idStr, statusStr, pickupStr, dropoffStr, typeStr, fareStr, passengerIdStr, driverIdStr, bookedAtStr, completedAtStr;
+        string idStr, statusStr, pickupStr, dropoffStr, typeStr, fareStr, passengerIdStr, driverIdStr, bookedAtStr, startedAtStr, completedAtStr;
 
         acceptedId = -1;
         found = false;
@@ -611,12 +677,12 @@ public:
         {
             while (getline(file, line))
             {
-                string *fields[10] = {&idStr, &statusStr, &pickupStr, &dropoffStr, &typeStr, &fareStr, &passengerIdStr, &bookedAtStr, &driverIdStr, &completedAtStr};
-                getFields(line, fields, 10);
+                string *fields[11] = {&idStr, &statusStr, &pickupStr, &dropoffStr, &typeStr, &fareStr, &passengerIdStr, &bookedAtStr, &driverIdStr, &startedAtStr, &completedAtStr};
+                getFields(line, fields, 11);
 
                 if (statusStr == "available" && (this->vehicle).type == typeStr)
                 {
-                    booking.load(stoi(idStr), statusStr, pickupStr[0], dropoffStr[0], typeStr, stoi(fareStr), stoi(passengerIdStr), bookedAtStr, stoi(driverIdStr), completedAtStr);
+                    booking.load(stoi(idStr), statusStr, pickupStr[0], dropoffStr[0], typeStr, stoi(fareStr), stoi(passengerIdStr), bookedAtStr, stoi(driverIdStr), startedAtStr, completedAtStr);
                     booking.display(false);
                 }
 
@@ -765,11 +831,11 @@ void Booking::display(bool fromPassenger)
     cout << endl
          << "Dropoff Location: " << dropoffLocation;
     cout << endl
-         << "Average Distance: " << abs(dropoffLocation - pickupLocation) << " km";
+         << "Average Distance: " << avgDistance << " km";
     cout << endl
          << "Vehicle Type: " << type;
     cout << endl
-         << "Booked at: " << bookedAt << endl; // BUG: booked at displaying as "-"
+         << "Booked at: " << bookedAt << endl;
 }
 
 void User::viewHistory(bool isPassenger)
@@ -777,19 +843,19 @@ void User::viewHistory(bool isPassenger)
     ifstream file("bookings.csv");
     string line;
 
-    string idStr, statusStr, pickupStr, dropoffStr, typeStr, fareStr, passengerIdStr, driverIdStr, bookedAtStr, completedAtStr;
+    string idStr, statusStr, pickupStr, dropoffStr, typeStr, fareStr, passengerIdStr, driverIdStr, bookedAtStr, startedAtStr, completedAtStr;
     Booking booking;
 
     if (file)
     {
         while (getline(file, line))
         {
-            string *fields[10] = {&idStr, &statusStr, &pickupStr, &dropoffStr, &typeStr, &fareStr, &passengerIdStr, &bookedAtStr, &driverIdStr, &completedAtStr};
-            getFields(line, fields, 10);
+            string *fields[11] = {&idStr, &statusStr, &pickupStr, &dropoffStr, &typeStr, &fareStr, &passengerIdStr, &bookedAtStr, &driverIdStr, &startedAtStr, &completedAtStr};
+            getFields(line, fields, 11);
 
             if ((!isPassenger && stoi(driverIdStr) == id) || (isPassenger && stoi(passengerIdStr) == id))
             {
-                booking.load(stoi(idStr), statusStr, pickupStr[0], dropoffStr[0], typeStr, stoi(fareStr), stoi(passengerIdStr), bookedAtStr, stoi(driverIdStr), completedAtStr);
+                booking.load(stoi(idStr), statusStr, pickupStr[0], dropoffStr[0], typeStr, stoi(fareStr), stoi(passengerIdStr), bookedAtStr, stoi(driverIdStr), startedAtStr, completedAtStr);
                 booking.display(isPassenger);
             }
         }

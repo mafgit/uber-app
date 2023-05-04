@@ -5,7 +5,6 @@
 
 int main()
 {
-	// LATER: any string input must not have a comma
 	cout << endl
 		 << "Welcome to Uber Application!" << endl;
 	int opt1, opt2;
@@ -217,14 +216,42 @@ start:
 
 					while (1)
 					{
-						driver.viewAvailableRides(acceptedId, booking, found);
+						driver.viewAvailableRidesAndAsk(acceptedId, booking, found);
 						if (acceptedId == -2)
 							break;
 						if (found)
 						{
-							updateBooking(booking, "accepted", driver.getId(), "-");
+							updateBooking(booking, "accepted", driver.getId(), "-", "-");
 							break;
 						}
+					}
+
+					if (found)
+					{
+						int startRide;
+
+						do
+						{
+							cout << "Enter 1 to start ride: ";
+							cin >> startRide;
+						} while (startRide != 1);
+
+						string startedAt = getCurrentTime();
+						updateBooking(booking, "started", driver.getId(), startedAt, booking.getCompletedAt());
+
+						cout << "Ride started" << endl;
+
+						for (int i = 0; i < booking.getAvgDistance(); i++)
+						{
+							cout << endl
+								 << "Wait... " << i;
+							Sleep(1000);
+						}
+						cout << endl;
+
+						string completedAt = getCurrentTime();
+						updateBooking(booking, "completed", driver.getId(), startedAt, completedAt);
+						cout << "Ride completed" << endl;
 					}
 				}
 				if (opt == 2)
