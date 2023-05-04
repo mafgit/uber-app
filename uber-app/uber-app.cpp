@@ -61,13 +61,13 @@ start:
 
 			Vehicle vehicle(type, yearOfManufacture, make, model, trimLevel, plateNum, color);
 
-			int newId = getLastId("drivers.txt") + 1;
+			int newId = getLastId("drivers.csv") + 1;
 			Driver driver(newId, day, month, year, firstName, lastName, phoneNum, password, nic, vehicle);
 			driver.appendToFile();
 		}
 		else
 		{ // passenger
-			int newId = getLastId("passengers.txt") + 1;
+			int newId = getLastId("passengers.csv") + 1;
 			Passenger passenger(newId, day, month, year, firstName, lastName, phoneNum, password);
 			passenger.appendToFile();
 		}
@@ -92,7 +92,7 @@ start:
 		bool found = 0;
 		if (opt2 == 1)
 		{
-			ifstream passengers_in("passengers.txt");
+			ifstream passengers_in("passengers.csv");
 			string idStr, dayStr, monthStr, yearStr, firstNameStr, lastNameStr, phoneNumStr, passwordStr;
 			string line;
 
@@ -164,7 +164,7 @@ start:
 		}
 		else if (opt2 == 2)
 		{
-			ifstream drivers_in("drivers.txt");
+			ifstream drivers_in("drivers.csv");
 			string idStr, dayStr, monthStr, yearStr, firstNameStr, lastNameStr, phoneNumStr, passwordStr;
 			string typeStr, yearOfManufactureStr, modelStr, makeStr, trimLevelStr, plateNumStr, colorStr;
 			string nicStr;
@@ -209,7 +209,7 @@ start:
 
 				if (opt == 1)
 				{
-					// TODO: try to move this code into Classes.h
+					// LATER: try to move this code into Classes.h
 
 					int acceptedId = -1;
 					bool found = false;

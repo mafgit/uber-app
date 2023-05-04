@@ -364,6 +364,10 @@ FodyWeavers.xsd
 
 /uber-app/uber-app.exe
 /.vscode
+/uber-app/.vscode
 /uber-app/passengers.txt
 /uber-app/drivers.txt
 /uber-app/bookings.txt
+/uber-app/passengers.csv
+/uber-app/drivers.csv
+/uber-app/bookings.csv

@@ -44,7 +44,7 @@ bool doesPhoneNumOrNicExist(string str, bool isItPhoneNum, string fileName)
     return phoneNumOrNicExists;
 }
 
-bool countOccurrences(string str, char ch)
+int countOccurrences(string str, char ch)
 {
     int occurrences = 0;
 
@@ -253,14 +253,16 @@ int getFarePerKM(string type)
 {
     if (type == "Uber Auto")
         return 25;
-    if (type == "Uber Moto")
+    else if (type == "Uber Moto")
         return 28;
-    if (type == "UberX")
+    else if (type == "UberX")
         return 35;
-    if (type == "UberXL")
+    else if (type == "UberXL")
         return 45;
-    if (type == "Uber Black")
+    else if (type == "Uber Black")
         return 50;
+    else
+        return 0;
 }
 
 int getAge(int day, int month, int year)

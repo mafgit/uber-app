@@ -133,7 +133,7 @@ public:
 
     bool checkFound()
     {
-        ifstream file("bookings.txt");
+        ifstream file("bookings.csv");
         string idStr, statusStr, driverIdStr;
 
         string line;
@@ -173,7 +173,7 @@ public:
 
     void getFromFile()
     {
-        ifstream file("bookings.txt");
+        ifstream file("bookings.csv");
         string idStr, statusStr, pickupLocationStr, dropoffLocationStr, typeStr,
             fareStr, passengerIdStr, bookedAtStr, driverIdStr, completedAtStr;
         string line;
@@ -200,7 +200,7 @@ public:
             pickupLocation = pickupLocationStr[0];
             dropoffLocation = dropoffLocationStr[0];
             type = typeStr;
-            // TODO:
+            // LATER:
             fare = stoi(fareStr);
             passengerId = stoi(passengerIdStr);
             bookedAt = bookedAtStr;
@@ -216,11 +216,11 @@ public:
 
 void updateBooking(Booking &booking, string newStatus, int newDriverId, string newCompletedAt)
 {
-    ifstream file("bookings.txt");
+    ifstream file("bookings.csv");
 
-    ofstream file2("bookings2.txt");
+    ofstream file2("bookings2.csv");
     file2.close();
-    file2.open("bookings2.txt", ios::app);
+    file2.open("bookings2.csv", ios::app);
     // string idStr, statusStr, pickupLocationStr, dropoffLocationStr, typeStr,
     // fareStr, passengerIdStr, bookedAtStr, driverIdStr, completedAtStr;
 
@@ -242,8 +242,8 @@ void updateBooking(Booking &booking, string newStatus, int newDriverId, string n
     file.close();
     file2.close();
 
-    remove("bookings.txt");
-    rename("bookings2.txt", "bookings.txt");
+    remove("bookings.csv");
+    rename("bookings2.csv", "bookings.csv");
 }
 
 class Passenger : public User
@@ -256,7 +256,7 @@ public:
 
     void appendToFile()
     {
-        ofstream file("passengers.txt", ios::app);
+        ofstream file("passengers.csv", ios::app);
         file << id << "," << day << "," << month << "," << year << "," << firstName << "," << lastName << "," << phoneNum << "," << password << "\n";
         file.close();
     }
@@ -294,11 +294,11 @@ public:
     void updateProfile(bool isPassenger) override
     {
         this->User::updateProfile(isPassenger);
-        ifstream file("passengers.txt");
+        ifstream file("passengers.csv");
 
-        ofstream file2("passengers2.txt");
+        ofstream file2("passengers2.csv");
         file2.close();
-        file2.open("passengers2.txt", ios::app);
+        file2.open("passengers2.csv", ios::app);
 
         string line, idStr;
         while (getline(file, line))
@@ -316,8 +316,8 @@ public:
         file.close();
         file2.close();
 
-        remove("passengers.txt");
-        rename("passengers2.txt", "passengers.txt");
+        remove("passengers.csv");
+        rename("passengers2.csv", "passengers.csv");
     }
 
     void bookARide()
@@ -342,7 +342,7 @@ public:
              << "Enter a number to select the type of vehicle that you want to book: " << endl;
         string type = typesMenu(false);
 
-        int newId = getLastId("bookings.txt") + 1;
+        int newId = getLastId("bookings.csv") + 1;
         Booking booking(newId, pickup, dropoff, type, this);
         booking.appendToFile();
 
@@ -353,7 +353,7 @@ public:
         cout << endl
              << "Checking every five seconds if any driver accepted the ride...";
 
-        // TODO: check if user cancels the search; in that case update status to unavailable
+        // LATER: check if user cancels the search; in that case update status to unavailable
         while (tries < MAX_TRIES && !found)
         {
             cout << endl
@@ -383,7 +383,7 @@ public:
         else
         {
             updateBooking(booking, "unavailable", -1, "-");
-            // TODO: check that if ctrl+c is pressed then the line above can be made to run or not
+            // LATER: check that if ctrl+c is pressed then the line above can be made to run or not
             cout << endl
                  << endl
                  << "Your ride was not accepted by any driver" << endl
@@ -404,7 +404,7 @@ public:
     void getFromFile()
     {
 
-        ifstream file("passengers.txt");
+        ifstream file("passengers.csv");
         string idStr, dayStr, monthStr, yearStr, firstNameStr, lastNameStr, phoneNumStr;
         string line;
         string *fields[7] = {&idStr, &dayStr, &monthStr, &yearStr, &firstNameStr, &lastNameStr, &phoneNumStr};
@@ -495,7 +495,7 @@ public:
 
     void appendToFile()
     {
-        ofstream file("drivers.txt", ios::app);
+        ofstream file("drivers.csv", ios::app);
         file << id << "," << day << "," << month << "," << year << "," << firstName << "," << lastName << ","
              << phoneNum << "," << password << "," << nic << "," << vehicle.type << "," << vehicle.yearOfManufacture << "," << vehicle.make << "," << vehicle.model << "," << vehicle.trimLevel << "," << vehicle.plateNum << "," << vehicle.color << "," << sumOfRatings << "," << ratedBy << "\n";
         file.close();
@@ -568,11 +568,11 @@ public:
         if (color2 != "-")
             vehicle.color = color2;
 
-        ifstream file("drivers.txt");
+        ifstream file("drivers.csv");
 
-        ofstream file2("drivers2.txt");
+        ofstream file2("drivers2.csv");
         file2.close();
-        file2.open("drivers2.txt", ios::app);
+        file2.open("drivers2.csv", ios::app);
 
         string line, idStr;
         while (getline(file, line))
@@ -590,8 +590,8 @@ public:
         file.close();
         file2.close();
 
-        remove("drivers.txt");
-        rename("drivers2.txt", "drivers.txt");
+        remove("drivers.csv");
+        rename("drivers2.csv", "drivers.csv");
     }
 
     void
@@ -599,7 +599,7 @@ public:
     {
         system("cls");
 
-        ifstream file("bookings.txt");
+        ifstream file("bookings.csv");
         string line;
 
         string idStr, statusStr, pickupStr, dropoffStr, typeStr, fareStr, passengerIdStr, driverIdStr, bookedAtStr, completedAtStr;
@@ -629,7 +629,7 @@ public:
 
                 if (acceptedId > -1)
                 {
-                    ifstream file("bookings.txt");
+                    ifstream file("bookings.csv");
                     string line, idStr, statusStr;
 
                     while (getline(file, line))
@@ -662,7 +662,7 @@ public:
     void getFromFile()
     {
 
-        ifstream file("drivers.txt");
+        ifstream file("drivers.csv");
         string idStr, dayStr, monthStr, yearStr, firstNameStr, lastNameStr, phoneNumStr, passwordStr;
         string typeStr, yearOfManufactureStr, modelStr, makeStr, trimLevelStr, plateNumStr, colorStr;
         string nicStr;
@@ -726,7 +726,7 @@ Booking::Booking(int id, char pickupLocation, char dropoffLocation, string type,
 
 void Booking::appendToFile()
 {
-    ofstream file("bookings.txt", ios::app);
+    ofstream file("bookings.csv", ios::app);
     file << id << "," << status << "," << pickupLocation << "," << dropoffLocation << "," << type << ","
          << fare << "," << passengerId << "," << bookedAt << "," << driverId << "," << completedAt << "\n";
     file.close();
@@ -754,7 +754,7 @@ void Booking::display(bool fromPassenger)
             Passenger p;
             p.setId(passengerId);
             p.getFromFile();
-            p.displayToUser(); // BUG: phoneNum & name blank
+            p.displayToUser();
         }
     }
     cout << "Status: " << status;
@@ -774,7 +774,7 @@ void Booking::display(bool fromPassenger)
 
 void User::viewHistory(bool isPassenger)
 {
-    ifstream file("bookings.txt");
+    ifstream file("bookings.csv");
     string line;
 
     string idStr, statusStr, pickupStr, dropoffStr, typeStr, fareStr, passengerIdStr, driverIdStr, bookedAtStr, completedAtStr;

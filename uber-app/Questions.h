@@ -106,9 +106,9 @@ void askPhoneNum(string &phoneNum, bool isPassenger, bool editing)
           else
           {
                if (isPassenger)
-                    filename = "passengers.txt";
+                    filename = "passengers.csv";
                else
-                    filename = "drivers.txt";
+                    filename = "drivers.csv";
 
                phoneNumExists = doesPhoneNumOrNicExist(phoneNum, true, filename);
           }
@@ -138,7 +138,7 @@ void askNIC(bool editing, string &nic)
                cerr << endl
                     << "Error: invalid NIC" << endl;
 
-          nicExists = doesPhoneNumOrNicExist(nic, false, "drivers.txt");
+          nicExists = doesPhoneNumOrNicExist(nic, false, "drivers.csv");
           if (nicExists)
                cerr << endl
                     << "Error: this NIC is already in use" << endl;
