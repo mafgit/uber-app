@@ -301,7 +301,7 @@ void addRating(int id, int rating)
         getFields(line, fields, 18);
 
         if (stoi(idStr) == id)
-            line = id + "," + dayStr + "," + monthStr + "," + yearStr + "," + firstNameStr + "," + lastNameStr + "," + phoneNumStr + "," + passwordStr + "," + nicStr + "," + typeStr + "," + yearOfManufactureStr + "," + makeStr + "," + modelStr + "," + trimLevelStr + "," + plateNumStr + "," + colorStr + "," + to_string(stoi(sumOfRatingsStr) + rating) + "," + to_string(stoi(ratedByStr) + 1);
+            line = idStr + "," + dayStr + "," + monthStr + "," + yearStr + "," + firstNameStr + "," + lastNameStr + "," + phoneNumStr + "," + passwordStr + "," + nicStr + "," + typeStr + "," + yearOfManufactureStr + "," + makeStr + "," + modelStr + "," + trimLevelStr + "," + plateNumStr + "," + colorStr + "," + to_string(stoi(sumOfRatingsStr) + rating) + "," + to_string(stoi(ratedByStr) + 1);
 
         file2 << line << "\n";
     }

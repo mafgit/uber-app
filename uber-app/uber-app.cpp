@@ -214,9 +214,10 @@ start:
 					bool found = false;
 					Booking booking;
 
+					// BUG:
 					while (1)
 					{
-						driver.viewAvailableRidesAndAsk(acceptedId, booking, found);
+						driver.viewAvailableRides(acceptedId, booking, found);
 						if (acceptedId == -2)
 							break;
 						if (found)

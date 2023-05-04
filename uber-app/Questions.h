@@ -45,46 +45,6 @@ void askDate(int type, int &date, int min, int max, bool editing)
      } while (date > max && date < min);
 }
 
-// void askDOB(int &day, int &month, int &year, bool isPassenger, bool editing)
-// {
-//      int age;
-//      bool err_1;
-
-//      do
-//      {
-//           cout << endl
-//                << "Enter date of your birth [1 to 31]: ";
-//           // LATER: check for no of days being correct for a particular month can be implemented
-//           cin >> day;
-//           cout << endl
-//                << "Enter month of your birth [1 to 12]: ";
-//           cin >> month;
-//           cout << endl
-//                << "Enter year of your birth: ";
-//           cin >> year;
-
-//           err_1 = day > 31 || month > 12 || year > current_year;
-
-//           if (editing)
-//                is_err = !err_1 && !(day < -1 || month < -1 || (year < -1 || (year > -1 && year < current_year - 120)));
-//           else
-//                is_err = !err_1 && !(day < 1 || month < 1 || year < current_year - 120);
-
-//           if (is_err)
-//                cerr
-//                    << endl
-//                    << "Error: invalid date of birth" << endl;
-
-//           age = getAge(day, month, year);
-//           if (!is_err && !isPassenger)
-//           {
-//                if (age < 18)
-//                     cerr << endl
-//                          << "Error: driver must be at least 18 years old" << endl;
-//           }
-//      } while (is_err || (age < 18 && !isPassenger));
-// }
-
 void askPhoneNum(string &phoneNum, bool isPassenger, bool editing)
 {
      bool phoneNumExists = false;

@@ -293,7 +293,7 @@ public:
     void viewProfile() override
     {
         this->User::viewProfile();
-        // TODO: more data?
+        // LATER: more data?
     }
 
     void updateProfile(bool isPassenger) override
@@ -389,7 +389,7 @@ public:
             bool started = false;
 
             while (tries2 < MAX_TRIES && !started)
-            { // LATER: different const
+            {
 
                 cout << endl
                      << "Wait... ";
@@ -580,7 +580,6 @@ public:
             cout << "3) View profile" << endl;
             cout << "4) Update profile" << endl;
             cout << "5) Logout" << endl;
-            // LATER: 6) Delete account
             cin >> opt;
         } while (opt > 5 || opt < 1);
 
@@ -713,6 +712,8 @@ public:
 
             file.close();
         }
+        else
+            acceptedId = -2;
     }
 
     void setId(int id)
