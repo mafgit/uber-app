@@ -35,7 +35,7 @@ public:
     virtual void updateProfile(bool isPassenger)
     {
         cout << endl
-             << "If you do not want to update a field then enter a hyphen (-) in it if it is a text field and -1 if it is a number field" << endl;
+             << "If you do not want to update a field then enter -1 in it" << endl;
 
         string firstName2, lastName2, password2;
         int day2, month2, year2;
@@ -76,7 +76,7 @@ public:
             lastName = lastName2;
         if (password2 != "-")
             password = password2;
-        if (phoneNum2 != "-" && phoneNum2 != "0")
+        if (phoneNum2 != "-" && phoneNum2 != "-1")
             phoneNum = phoneNum2;
         if (day2 != -1)
             day = day2;
@@ -84,9 +84,8 @@ public:
             month = month2;
         if (year2 != -1)
             year = year2;
-
-        // TODO: update the member variables and file
     }
+
     void viewHistory(bool);
 
     int getId() { return id; }
@@ -101,7 +100,7 @@ class Booking
     string status = "available"; // available, not accepted, arriving, arrived, in progress, completed, cancelled
     char pickupLocation = '-', dropoffLocation = '-';
     string type = "";
-    int fare = 0; // LATER: check if fare should be taken in float
+    int fare = 0;
     Passenger *passenger;
     int passengerId = -1;
     int driverId = -1;
@@ -202,11 +201,11 @@ public:
             dropoffLocation = dropoffLocationStr[0];
             type = typeStr;
             // TODO:
-            // fare = stoi(fareStr);
-            // passengerId = stoi(passengerIdStr);
-            // bookedAt = bookedAtStr;
-            // driverId = stoi(driverIdStr);
-            // completedAt = completedAtStr;
+            fare = stoi(fareStr);
+            passengerId = stoi(passengerIdStr);
+            bookedAt = bookedAtStr;
+            driverId = stoi(driverIdStr);
+            completedAt = completedAtStr;
         }
 
         file.close();
@@ -292,11 +291,34 @@ public:
         // TODO: more data?
     }
 
-    // void updateProfile() override
-    // {
-    //     this->User::updateProfile();
-    //     // TODO: edit file
-    // }
+    void updateProfile(bool isPassenger) override
+    {
+        this->User::updateProfile(isPassenger);
+        ifstream file("passengers.txt");
+
+        ofstream file2("passengers2.txt");
+        file2.close();
+        file2.open("passengers2.txt", ios::app);
+
+        string line, idStr;
+        while (getline(file, line))
+        {
+            ss.clear();
+            ss.str(line);
+            getline(ss, idStr, ',');
+
+            if (stoi(idStr) == id)
+                line = to_string(id) + "," + to_string(day) + "," + to_string(month) + "," + to_string(year) + "," + firstName + "," + lastName + "," + phoneNum + "," + password;
+
+            file2 << line << "\n";
+        }
+
+        file.close();
+        file2.close();
+
+        remove("passengers.txt");
+        rename("passengers2.txt", "passengers.txt");
+    }
 
     void bookARide()
     {
@@ -318,7 +340,7 @@ public:
 
         cout << endl
              << "Enter a number to select the type of vehicle that you want to book: " << endl;
-        string type = typesMenu();
+        string type = typesMenu(false);
 
         int newId = getLastId("bookings.txt") + 1;
         Booking booking(newId, pickup, dropoff, type, this);
@@ -418,6 +440,8 @@ public:
 
 class Vehicle
 {
+    friend class Driver;
+
     string type = "", make = "", model = "", trimLevel = "", plateNum = "", color = "";
     int yearOfManufacture = 0;
 
@@ -434,15 +458,6 @@ public:
         this->plateNum = plateNum;
         this->color = color;
     }
-
-    // getters
-    string getMake() { return make; }
-    string getModel() { return model; }
-    string getTrimLevel() { return trimLevel; }
-    string getPlateNum() { return plateNum; }
-    string getColor() { return color; }
-    string getType() { return type; }
-    int getYearOfManufacturer() { return yearOfManufacture; }
 
     void viewData()
     {
@@ -482,8 +497,7 @@ public:
     {
         ofstream file("drivers.txt", ios::app);
         file << id << "," << day << "," << month << "," << year << "," << firstName << "," << lastName << ","
-             << phoneNum << "," << password << "," << nic << "," << vehicle.getType() << "," << vehicle.getYearOfManufacturer() << "," << vehicle.getMake() << "," << vehicle.getModel() << "," << vehicle.getTrimLevel() << "," << vehicle.getPlateNum() << "," << vehicle.getColor() << "," << sumOfRatings << "," << ratedBy << "\n";
-        // LATER: check if friend function can be implemented
+             << phoneNum << "," << password << "," << nic << "," << vehicle.type << "," << vehicle.yearOfManufacture << "," << vehicle.make << "," << vehicle.model << "," << vehicle.trimLevel << "," << vehicle.plateNum << "," << vehicle.color << "," << sumOfRatings << "," << ratedBy << "\n";
         file.close();
     }
 
@@ -519,14 +533,69 @@ public:
         // LATER: more data?
     }
 
-    // void updateProfile() override
-    // {
-    //     this->User::updateProfile();
+    void updateProfile(bool isPassenger) override
+    {
+        this->User::updateProfile(isPassenger);
 
-    //     // TODO: edit file
-    // }
+        string nic2;
+        string type2, make2, model2, trimLevel2, plateNum2, color2;
+        int yearOfManufacture2;
 
-    void viewAvailableRides(int &acceptedId, Booking &booking, bool &found)
+        askNIC(true, nic2);
+        askVehicle(true, type2, yearOfManufacture2, make2, model2, trimLevel2, plateNum2, color2);
+
+        if (nic2 != "-1" && nic != "-")
+            nic = nic2;
+
+        if (type2 != "-")
+            vehicle.type = type2;
+
+        if (yearOfManufacture2 != -1)
+            vehicle.yearOfManufacture = yearOfManufacture2;
+
+        if (make2 != "-")
+            vehicle.make = make2;
+
+        if (model2 != "-")
+            vehicle.model = model2;
+
+        if (trimLevel2 != "-")
+            vehicle.trimLevel = trimLevel2;
+
+        if (plateNum2 != "-")
+            vehicle.plateNum = plateNum2;
+
+        if (color2 != "-")
+            vehicle.color = color2;
+
+        ifstream file("drivers.txt");
+
+        ofstream file2("drivers2.txt");
+        file2.close();
+        file2.open("drivers2.txt", ios::app);
+
+        string line, idStr;
+        while (getline(file, line))
+        {
+            ss.clear();
+            ss.str(line);
+            getline(ss, idStr, ',');
+
+            if (stoi(idStr) == id)
+                line = to_string(id) + "," + to_string(day) + "," + to_string(month) + "," + to_string(year) + "," + firstName + "," + lastName + "," + phoneNum + "," + password + "," + nic + "," + vehicle.type + "," + to_string(vehicle.yearOfManufacture) + "," + vehicle.make + "," + vehicle.model + "," + vehicle.trimLevel + "," + vehicle.plateNum + "," + vehicle.color + "," + to_string(sumOfRatings) + "," + to_string(ratedBy);
+
+            file2 << line << "\n";
+        }
+
+        file.close();
+        file2.close();
+
+        remove("drivers.txt");
+        rename("drivers2.txt", "drivers.txt");
+    }
+
+    void
+    viewAvailableRides(int &acceptedId, Booking &booking, bool &found)
     {
         system("cls");
 
@@ -545,7 +614,7 @@ public:
                 string *fields[10] = {&idStr, &statusStr, &pickupStr, &dropoffStr, &typeStr, &fareStr, &passengerIdStr, &bookedAtStr, &driverIdStr, &completedAtStr};
                 getFields(line, fields, 10);
 
-                if (statusStr == "available" && (this->vehicle).getType() == typeStr)
+                if (statusStr == "available" && (this->vehicle).type == typeStr)
                 {
                     booking.load(stoi(idStr), statusStr, pickupStr[0], dropoffStr[0], typeStr, stoi(fareStr), stoi(passengerIdStr), bookedAtStr, stoi(driverIdStr), completedAtStr);
                     booking.display(false);
@@ -683,7 +752,7 @@ void Booking::display(bool fromPassenger)
         if (passengerId != -1)
         {
             Passenger p;
-            p.setId(id);
+            p.setId(passengerId);
             p.getFromFile();
             p.displayToUser(); // BUG: phoneNum & name blank
         }

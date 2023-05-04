@@ -48,7 +48,7 @@ start:
 		askPhoneNum(phoneNum, opt2 == 1, false);
 
 		if (opt2 == 2)
-			askNIC(nic);
+			askNIC(false, nic);
 
 		askPassword(password, "-", false);
 
@@ -57,55 +57,7 @@ start:
 			string type, make, model, trimLevel, plateNum, color;
 			int yearOfManufacture;
 
-			cout << endl
-				 << "Enter a number to select the type of your vehicle: " << endl;
-			type = typesMenu();
-
-			int minYearOfManufacture = current_year - 17;
-			do
-			{
-				cout << endl
-					 << "Enter year of manufacture of your vehicle [" << minYearOfManufacture << " - " << current_year << "]: ";
-				cin >> yearOfManufacture;
-			} while (yearOfManufacture < minYearOfManufacture || yearOfManufacture > current_year);
-
-			do
-			{
-				cout << endl
-					 << "Enter make (manufacturer) of the vehicle [e.g. Toyota]: ";
-				cin >> make;
-			} while (!isValidName(make));
-
-			do
-			{
-				cout << endl
-					 << "Enter model of the vehicle [e.g. Corolla]: ";
-				cin >> model;
-			} while (!isValidName(model));
-
-			do
-			{
-
-				cout << endl
-					 << "Enter trim level of the vehicle [e.g. LE]: ";
-				cin >> trimLevel;
-			} while (!isValidName(trimLevel));
-
-			do
-			{
-
-				cout << endl
-					 << "Enter plate number of the vehicle [e.g. AAA-1111]: ";
-				cin >> plateNum;
-			} while (!isValidPlateNum(plateNum));
-
-			do
-			{
-
-				cout << endl
-					 << "Enter color of the vehicle [e.g. blue]: ";
-				cin >> color;
-			} while (!isValidName(color));
+			askVehicle(false, type, yearOfManufacture, make, model, trimLevel, plateNum, color);
 
 			Vehicle vehicle(type, yearOfManufacture, make, model, trimLevel, plateNum, color);
 

@@ -10,7 +10,7 @@ void askName(string &name, bool first, bool editing)
                << "Enter " << (first ? "first" : "last") << " name: ";
           cin >> name;
 
-          if (editing && name == "-")
+          if (editing && name == "-1")
                break;
 
           is_err = !isValidName(name);
@@ -34,12 +34,12 @@ void askDate(int type, int &date, int min, int max, bool editing)
      else
           str = "Enter year of your birth: ";
 
-     cout << endl
-          << str;
-     cin >> date;
-
      do
      {
+          cout << endl
+               << str;
+          cin >> date;
+
           if (editing && date == -1)
                break;
      } while (date > max && date < min);
@@ -95,7 +95,7 @@ void askPhoneNum(string &phoneNum, bool isPassenger, bool editing)
                << "Enter phone number (start with 0): ";
           cin >> phoneNum;
 
-          if (editing && (phoneNum == "-" || phoneNum == "0"))
+          if (editing && phoneNum == "-1")
                break;
 
           is_err = !isPhoneNumValid(phoneNum);
@@ -120,7 +120,7 @@ void askPhoneNum(string &phoneNum, bool isPassenger, bool editing)
      } while (is_err || phoneNumExists);
 }
 
-void askNIC(string &nic)
+void askNIC(bool editing, string &nic)
 {
      bool nicExists;
 
@@ -130,7 +130,9 @@ void askNIC(string &nic)
                << "Enter NIC number (without dashes): ";
           cin >> nic;
 
-          is_err = !isValidNIC(nic);
+          if (editing && nic == "-1")
+
+               is_err = !isValidNIC(nic);
 
           if (is_err)
                cerr << endl
@@ -158,7 +160,7 @@ void askPassword(string &password, string currentPassword, bool editing)
                     << "Enter current password: ";
                cin >> currentPasswordConfirm;
 
-               if (currentPasswordConfirm == "-")
+               if (currentPasswordConfirm == "-1")
                {
                     doNotModify = true;
                     break;
@@ -174,10 +176,11 @@ void askPassword(string &password, string currentPassword, bool editing)
 
      if (!doNotModify)
      {
-          is_err = false;
           string newWord = editing ? "new " : "";
           do
           {
+               is_err = false;
+
                cout << endl
                     << "Enter " << newWord << "password: ";
                cin >> password;
@@ -201,4 +204,76 @@ void askPassword(string &password, string currentPassword, bool editing)
                }
           } while (is_err || containsComma(password));
      }
+}
+
+void askVehicle(bool editing, string &type, int &yearOfManufacture, string &make, string &model, string &trimLevel, string &plateNum, string &color)
+{
+     int minYearOfManufacture = current_year - 17;
+
+     cout << endl
+          << "Enter a number to select the type of your vehicle: " << endl;
+     type = typesMenu(editing);
+
+     do
+     {
+          cout << endl
+               << "Enter year of manufacture of your vehicle [" << minYearOfManufacture << " - " << current_year << "]: ";
+          cin >> yearOfManufacture;
+
+          if (editing && yearOfManufacture == -1)
+               break;
+     } while (yearOfManufacture < minYearOfManufacture || yearOfManufacture > current_year);
+
+     do
+     {
+          cout << endl
+               << "Enter make (manufacturer) of the vehicle [e.g. Toyota]: ";
+          cin >> make;
+
+          if (editing && make == "-1")
+               break;
+     } while (!isValidName(make));
+
+     do
+     {
+          cout << endl
+               << "Enter model of the vehicle [e.g. Corolla]: ";
+          cin >> model;
+
+          if (editing && model == "-1")
+               break;
+     } while (!isValidName(model));
+
+     do
+     {
+
+          cout << endl
+               << "Enter trim level of the vehicle [e.g. LE]: ";
+          cin >> trimLevel;
+
+          if (editing && trimLevel == "-1")
+               break;
+     } while (!isValidName(trimLevel));
+
+     do
+     {
+
+          cout << endl
+               << "Enter plate number of the vehicle [e.g. AAA-1111]: ";
+          cin >> plateNum;
+
+          if (editing && plateNum == "-1")
+               break;
+     } while (!isValidPlateNum(plateNum));
+
+     do
+     {
+
+          cout << endl
+               << "Enter color of the vehicle [e.g. blue]: ";
+          cin >> color;
+
+          if (editing && color == "-1")
+               break;
+     } while (!isValidName(color));
 }

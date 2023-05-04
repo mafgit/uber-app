@@ -175,7 +175,7 @@ int menu2()
     return opt;
 }
 
-string typesMenu()
+string typesMenu(bool editing)
 {
     int opt = 0;
 
@@ -188,6 +188,8 @@ string typesMenu()
         cout << "4) UberXL [Affordable rides for groups up to 6] [6 passengers]" << endl;
         cout << "5) Uber Black [Premium rides in luxury cars]" << endl;
         cin >> opt;
+        if (editing && opt == -1)
+            return "-";
     } while (opt < 1 || opt > 5);
 
     if (opt == 1)
