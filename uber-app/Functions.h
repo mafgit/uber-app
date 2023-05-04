@@ -249,6 +249,20 @@ void getFields(string line, string *fields[20], int num_fields)
         getline(ss, *(fields[i]), ',');
 }
 
+int getFarePerKM(string type)
+{
+    if (type == "Uber Auto")
+        return 25;
+    if (type == "Uber Moto")
+        return 28;
+    if (type == "UberX")
+        return 35;
+    if (type == "UberXL")
+        return 45;
+    if (type == "Uber Black")
+        return 50;
+}
+
 int getAge(int day, int month, int year)
 {
     struct tm dob = {0};

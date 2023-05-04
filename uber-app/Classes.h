@@ -720,7 +720,7 @@ Booking::Booking(int id, char pickupLocation, char dropoffLocation, string type,
     this->type = type;
     this->passenger = passenger;
     this->passengerId = passenger->getId();
-    this->fare = fare_per_km * abs(dropoffLocation - pickupLocation); // TODO: also use type of vehicle to calculate cost
+    this->fare = getFarePerKM(type) * abs(dropoffLocation - pickupLocation);
     bookedAt = getCurrentTime();
 }
 
