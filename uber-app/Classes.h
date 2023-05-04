@@ -723,7 +723,7 @@ public:
 
     float getRating()
     {
-        return (ratedBy == 0) ? 0 : sumOfRatings / ratedBy;
+        return (ratedBy == 0) ? 0 : (float)sumOfRatings / (float)ratedBy;
     }
 
     void getFromFile()

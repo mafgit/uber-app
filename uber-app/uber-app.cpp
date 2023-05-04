@@ -23,7 +23,6 @@ start:
 	string nic;
 	int age;
 
-	bool is_err;
 	if (opt1 == 1)
 	{
 		askName(firstName, true, false);

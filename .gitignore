@@ -362,7 +362,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-/uber-app/uber-app.exe
 /.vscode
 /uber-app/.vscode
 /uber-app/passengers.txt
