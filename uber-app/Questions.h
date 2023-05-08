@@ -42,7 +42,7 @@ void askDate(int type, int &date, int min, int max, bool editing)
 
           if (editing && date == -1)
                break;
-     } while (date > max && date < min);
+     } while (date > max || date < min);
 }
 
 void askPhoneNum(string &phoneNum, bool isPassenger, bool editing)

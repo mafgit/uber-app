@@ -406,8 +406,9 @@ public:
                     tries2++;
                 else
                 {
-                    cout << "Ride started" << endl;
-                    for (int i = 0; i < booking.getAvgDistance() + 6; i++)
+                    cout << endl
+                         << "Ride started" << endl;
+                    for (int i = 0; i < booking.getAvgDistance() + 5; i++)
                     {
                         cout << endl
                              << "Wait... " << i;
@@ -425,11 +426,14 @@ public:
 
                         do
                         {
-                            cout << "Enter rating out of 5: " << endl;
+                            cout << endl
+                                 << "Enter rating out of 5: " << endl;
                             cin >> rating;
                         } while (rating > 5 || rating < 0);
 
                         addRating(booking.getDriverId(), rating);
+                        cout << endl
+                             << "Thank you";
                     }
                 }
             }
@@ -660,7 +664,7 @@ public:
         rename("drivers2.csv", "drivers.csv");
     }
 
-    void viewAvailableRides(int &acceptedId, Booking &booking, bool &found)
+    void viewAvailableRidesAndAskId(int &acceptedId, Booking &booking, bool &found)
     {
         system("cls");
 
@@ -668,6 +672,7 @@ public:
         string line;
 
         string idStr, statusStr, pickupStr, dropoffStr, typeStr, fareStr, passengerIdStr, driverIdStr, bookedAtStr, startedAtStr, completedAtStr;
+        string *fields[11] = {&idStr, &statusStr, &pickupStr, &dropoffStr, &typeStr, &fareStr, &passengerIdStr, &bookedAtStr, &driverIdStr, &startedAtStr, &completedAtStr};
 
         acceptedId = -1;
         found = false;
@@ -676,7 +681,6 @@ public:
         {
             while (getline(file, line))
             {
-                string *fields[11] = {&idStr, &statusStr, &pickupStr, &dropoffStr, &typeStr, &fareStr, &passengerIdStr, &bookedAtStr, &driverIdStr, &startedAtStr, &completedAtStr};
                 getFields(line, fields, 11);
 
                 if (statusStr == "available" && (this->vehicle).type == typeStr)
@@ -684,36 +688,34 @@ public:
                     booking.load(stoi(idStr), statusStr, pickupStr[0], dropoffStr[0], typeStr, stoi(fareStr), stoi(passengerIdStr), bookedAtStr, stoi(driverIdStr), startedAtStr, completedAtStr);
                     booking.display(false);
                 }
-
-                cout << endl
-                     << "Enter a booking ID to accept it (enter -2 to cancel): ";
-                cin >> acceptedId;
-
-                if (acceptedId < -1)
-                    acceptedId = -2;
-
-                if (acceptedId > -1)
-                {
-                    ifstream file("bookings.csv");
-                    string line, idStr, statusStr;
-
-                    while (getline(file, line))
-                    {
-                        ss.clear();
-                        ss.str(line);
-                        getline(ss, idStr, ',');
-                        getline(ss, statusStr, ',');
-
-                        if (stoi(idStr) == acceptedId && statusStr == "available")
-                            found = true;
-                    }
-                }
             }
-
-            file.close();
         }
-        else
-            acceptedId = -2;
+
+        cout << endl
+             << "Enter a booking ID to accept it (enter -1 to cancel): ";
+        cin >> acceptedId;
+
+        if (acceptedId < 0)
+            acceptedId = -1;
+
+        else // if acceptedId >= 0
+        {
+            ifstream file("bookings.csv");
+            string line, idStr, statusStr;
+
+            while (getline(file, line))
+            {
+                ss.clear();
+                ss.str(line);
+                getline(ss, idStr, ',');
+                getline(ss, statusStr, ',');
+
+                if (stoi(idStr) == acceptedId && statusStr == "available")
+                    found = true;
+            }
+        }
+
+        file.close();
     }
 
     void setId(int id)

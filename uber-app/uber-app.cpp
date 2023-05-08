@@ -12,7 +12,11 @@ int main()
 start:
 	opt1 = menu1();
 	if (opt1 == 3)
+	{
+		cout << endl
+			 << "Thank you for using uber-app!" << endl;
 		return 0;
+	}
 
 	opt2 = menu2();
 	if (opt2 == 3)
@@ -209,22 +213,22 @@ start:
 				{
 					// LATER: try to move this code into Classes.h
 
-					int acceptedId = -1;
-					bool found = false;
+					int acceptedId;
+					bool found;
 					Booking booking;
 
-					// BUG:
-					while (1)
+					do
 					{
-						driver.viewAvailableRides(acceptedId, booking, found);
-						if (acceptedId == -2)
+						driver.viewAvailableRidesAndAskId(acceptedId, booking, found);
+						if (acceptedId == -1)
 							break;
+
 						if (found)
 						{
 							updateBooking(booking, "accepted", driver.getId(), "-", "-");
 							break;
 						}
-					}
+					} while (acceptedId != -1 && found == false);
 
 					if (found)
 					{
@@ -239,7 +243,8 @@ start:
 						string startedAt = getCurrentTime();
 						updateBooking(booking, "started", driver.getId(), startedAt, booking.getCompletedAt());
 
-						cout << "Ride started" << endl;
+						cout << endl
+							 << "Ride started" << endl;
 
 						for (int i = 0; i < booking.getAvgDistance(); i++)
 						{
@@ -251,7 +256,10 @@ start:
 
 						string completedAt = getCurrentTime();
 						updateBooking(booking, "completed", driver.getId(), startedAt, completedAt);
-						cout << "Ride completed" << endl;
+						cout << endl
+							 << "Ride completed!" << endl;
+						cout << endl
+							 << "You may see your updated rating after logging in again" << endl;
 					}
 				}
 				if (opt == 2)
